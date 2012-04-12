@@ -8,6 +8,7 @@
 /dev/kgsl-2d0             0666   root       root
 /dev/kgsl-2d1             0666   root       root
 /dev/rtc0                 0600   system     system
+/dev/genlock              0666  system     graphics
 
 # these should not be world writable
 /dev/sdio_tty_ciq_00      0660   system     system

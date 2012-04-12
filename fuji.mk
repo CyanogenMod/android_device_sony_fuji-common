@@ -80,4 +80,4 @@ PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
 # Custom init / uevent
 PRODUCT_COPY_FILES += \
 		device/sony/fuji-common/config/init.semc.rc:root/init.semc.rc \
-		device/sony/fuji-common/config/ueventd.fuji.rc:root/ueventd.fuji.rc
+		device/sony/fuji-common/config/ueventd.semc.rc:root/ueventd.semc.rc

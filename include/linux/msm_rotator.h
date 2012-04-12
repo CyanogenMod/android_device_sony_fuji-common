@@ -83,3 +83,4 @@ struct msm_rotator_platform_data {
 	const char *regulator_name;
 };
 #endif
+
