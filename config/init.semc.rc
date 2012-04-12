@@ -231,6 +231,10 @@ on fs
     exec /sbin/mr
     exec /sbin/checkabortedflash
 
+    export EXTERNAL_STORAGE /mnt/sdcard
+    mkdir /mnt/sdcard 0000 system system
+    symlink /mnt/sdcard /sdcard
+
 on post-fs
     chmod 0664 /sys/devices/platform/msm_sdcc.1/polling
     chmod 0664 /sys/devices/platform/msm_sdcc.3/polling
