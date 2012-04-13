@@ -1,3 +1,4 @@
+import init.semc.usb.rc
 ## Disabled by CBUT - it doesn't work with Fuji
 ##on init
 ##    # start master reset
