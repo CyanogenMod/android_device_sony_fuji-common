@@ -26,26 +26,31 @@ on early-boot
     exec /sbin/bootrec
 
 service updatemiscta /system/bin/updatemiscta
+    class main
     user root
     oneshot
 
 service iddd /system/bin/iddd
+    class main
     user idd
     group idd log
 
 # Set the startup flag to boot complete, run on property change
 service setssflagbc /system/bin/startupflag bootcomplete
+    class main
     user root
     oneshot
     disabled
 
 # AT+CTSA and AT+CKPD support
 service atfwd-daemon /system/bin/atfwd-daemon
+    class main
     user root
     oneshot
     disabled
 
 service fota-snoop /system/bin/fota-snoop
+    class main
     group cache
     oneshot
     disabled
@@ -57,6 +62,7 @@ on property:dev.bootcomplete=1
 
 # Start suntrold
 service suntrold /system/bin/suntrold
+    class main
     user system
     group system
     oneshot
@@ -74,10 +80,12 @@ on property:persist.kernel.log=default
     exec /system/bin/klogrouter default
 
 service klogrouterd /system/bin/klogrouter logcat
-     oneshot
+    class main
+    oneshot
 
 # Fast Dormancy
 service fast-dormancy /system/bin/fast-dormancy
+    class main
 
 on property:ro.semc.enable.fast_dormancy=false
 stop fast-dormancy
@@ -95,8 +103,10 @@ on boot
     setprop net.webkit.cache.maxdeadsize  4194304
 
 service secchan /system/bin/secchand
+    class main
     user system
     group system
+
 on post-fs
    # Run pre_hw_config.sh before entering Charge only mode.
    exec /system/bin/sh /system/etc/pre_hw_config.sh
@@ -164,7 +174,9 @@ on boot
     write /sys/module/usb_storage/parameters/delay_use 2
 
 service port-bridge /system/bin/port-bridge /dev/smd0 /dev/ttyGS0
+    class main
     disabled
+    oneshot
 
 on property:persist.service.adb.enable=1
     exec /init.usbmode.sh
@@ -194,10 +206,13 @@ on property:usb.accessory.enable=0
     exec /init.usbmode.sh
 
 service illumination /system/bin/illumination_service
+    class main
 
 service touchd /system/bin/touchd
+    class main
 
 service time_daemon /system/bin/time_daemon
+    class main
     user root
     group root
     oneshot
@@ -206,6 +221,7 @@ service time_daemon /system/bin/time_daemon
 on property:persist.timed.enable=true
     mkdir /data/time/ 0700 system system
     start time_daemon
+
 # mount mmc partitions
 on fs
     # mount /system, set up links to the modem, and remount r/o
@@ -361,6 +377,7 @@ on boot
     chmod 0660 /data/misc/tsce/logfile.txt
 
 service btld /system/bin/btld -lpm 1
+    class main
     user root
     group bluetooth net_bt_admin
     disabled
@@ -370,24 +387,29 @@ service hciattach /system/bin/brcm_patchram_plus --enable_hci --enable_lpm \
     --use_baudrate_for_download --reset_baudrate --scopcm 0,4,0,0,0,0,0,0,3,0 \
     --no2bytes --baudrate 3000000 --patchram /system/etc/firmware/BCM4330.hcd \
     /dev/ttyHS0
+    class main
     user bluetooth
     group bluetooth net_bt_admin
     disabled
 
 service cnd /system/bin/cnd
+    class main
     socket cnd stream 660 root radio
 
 service rmt_storage /system/bin/rmt_storage
+    class main
     user root
     disabled
 
 service updatemiscta /system/bin/updatemiscta
+    class main
     user root
     disabled
     oneshot
 
 # SEMC, TA rmt service
 service ta_rmt_service /system/bin/ta_rmt_service
+    class main
     user root
     disabled
 
@@ -398,34 +420,42 @@ on property:ro.emmc=1
 
 # Copy calibration data from NV to kernel drivers
 service nvimport /system/bin/nvimport
+    class main
     user root
     oneshot
 
 service wpa_supplicant /system/bin/wpa_supplicant -Dwext -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf
+    class main
     socket wpa_wlan0 dgram 660 wifi wifi
     disabled
     oneshot
 
 service dhcpcd_wlan0 /system/bin/dhcpcd -B -d wlan0 -t 30
+    class main
     disabled
     oneshot
 
 service iprenew_wlan0 /system/bin/dhcpcd -n
+    class main
     disabled
     oneshot
 
 service qmuxd /system/bin/qmuxd
+    class main
 
 service netmgrd /system/bin/netmgrd
+    class main
 
 # SEMC, TA Daemon
 service tad /system/bin/tad /dev/block/mmcblk0p1 0,16,256
+    class main
     user root
     group root
     socket tad stream 0660 system system
     class trimarea
 
 service hw_config /system/bin/sh /system/etc/hw_config.sh
+    class main
     user root
     oneshot
 
@@ -433,6 +463,7 @@ service hw_config /system/bin/sh /system/etc/hw_config.sh
 # Preferably the ONLY_IN_VARIANT macro should be used but
 # seems like the build system does not parse this file properly.
 service lcatp /system/bin/lcatp
+    class main
     disabled
     oneshot
 
@@ -454,11 +485,13 @@ on property:init.svc.bootanim=stopped
     start thermald
 
 service media /system/bin/mediaserver
+    class main
     user media
     group system audio camera graphics inet net_bt net_bt_admin net_raw radio
     ioprio rt 4
 
 service nvcustomizer /system/bin/nvcustomizer
+    class main
     user root
     oneshot
     disabled
@@ -480,6 +513,7 @@ on boot
     chmod 644 /data/datarequest_flg
 
 service hdmid /system/bin/hdmid
+    class main
     user system
     group system inet graphics
 
@@ -499,4 +533,5 @@ on boot
     setprop ro.wifi.eap_sim_enabled true
 
 service semcwall /system/bin/semcwall
+    class main
     user root
