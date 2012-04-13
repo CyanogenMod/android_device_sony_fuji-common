@@ -23,7 +23,7 @@ on early-boot
     exec /sbin/fota-ua c
 
     # Start the offline charging (This blocks booting further in some cases)
-    exec /system/bin/chargemon
+    exec /sbin/bootrec
 
 service updatemiscta /system/bin/updatemiscta
     user root
