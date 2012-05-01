@@ -6,112 +6,36 @@ import init.semc.usb.rc
 ##    # Check if flash was aborted
 ##    exec /sbin/checkabortedflash
 
-on early-fs
-    # Do some post work for dump before used
-    # by the system.
-    exec /sbin/grabramdump
+##on early-fs
+##    # Do some post work for dump before used
+##    # by the system.
+##    exec /sbin/grabramdump
 
 on post-fs
-    mkdir /data/tombstones 0755 system system
-    mkdir /data/crashsms 0711 system system
-    mkdir /data/crashsms/crashes 0755 system system
-    mkdir /data/mediaserver 0740 media media
+   mkdir /data/tombstones 0755 system system
+   mkdir /data/crashsms 0711 system system
+   mkdir /data/crashsms/crashes 0755 system system
+   mkdir /data/mediaserver 0740 media media
+
+on init
+##    # setup the global environment
+##    export EXTERNAL_STORAGE_ALL /mnt/sdcard:/mnt/usbdisk
+##    export EXTERNAL_STORAGE_USB /mnt/usbdisk
+
+   # create mountpoint
+   mkdir /mnt/usbdisk 0000 system system
+
+   # Create symlink
+   symlink /mnt/usbdisk /usbdisk
 
 on early-boot
-    # FOTA must be started after partitions are mounted
-    # and property service is initialized
-    exec /sbin/fota-ua c
+   # FOTA must be started after partitions are mounted
+   # and property service is initialized
+#   exec /sbin/fota-ua c
 
-    # Start the offline charging (This blocks booting further in some cases)
-    exec /sbin/bootrec
+   # Check for keypress and load recovery/offline charging
+   exec /sbin/bootrec
 
-service updatemiscta /system/bin/updatemiscta
-    class main
-    user root
-    oneshot
-
-service iddd /system/bin/iddd
-    class main
-    user idd
-    group idd log
-
-# Set the startup flag to boot complete, run on property change
-service setssflagbc /system/bin/startupflag bootcomplete
-    class main
-    user root
-    oneshot
-    disabled
-
-# AT+CTSA and AT+CKPD support
-service atfwd-daemon /system/bin/atfwd-daemon
-    class main
-    user root
-    oneshot
-    disabled
-
-service fota-snoop /system/bin/fota-snoop
-    class main
-    group cache
-    oneshot
-    disabled
-
-on property:dev.bootcomplete=1
-    start setssflagbc
-    start atfwd-daemon
-    start fota-snoop
-
-# Start suntrold
-service suntrold /system/bin/suntrold
-    class main
-    user system
-    group system
-    oneshot
-
-on property:persist.kernel.log=logcat
-    stop klogrouterd
-    start klogrouterd
-
-on property:persist.kernel.log=uart
-    stop klogrouterd
-    exec /system/bin/klogrouter uart
-
-on property:persist.kernel.log=default
-    stop klogrouterd
-    exec /system/bin/klogrouter default
-
-service klogrouterd /system/bin/klogrouter logcat
-    class main
-    oneshot
-
-# Fast Dormancy
-service fast-dormancy /system/bin/fast-dormancy
-    class main
-
-on property:ro.semc.enable.fast_dormancy=false
-stop fast-dormancy
-
-on boot
-# Optimized browser caching and connection handling
-    setprop net.http.idle_cache.size  40
-    setprop net.http.threads  10
-    setprop net.webkit.cache.size  12582912
-    setprop net.nw.cache.prioadvstep  86400000
-    setprop net.nw.cache.weightadvstep  3600000
-    setprop net.nw.cache.orderby  weight
-    setprop net.http.idle_cache.shutdown  true
-    setprop net.webkit.cache.mindeadsize  4194304
-    setprop net.webkit.cache.maxdeadsize  4194304
-
-service secchan /system/bin/secchand
-    class main
-    user system
-    group system
-
-on post-fs
-   # Run pre_hw_config.sh before entering Charge only mode.
-   exec /system/bin/sh /system/etc/pre_hw_config.sh
-
-on early-boot
    # Touch firmware update
    exec /system/bin/sh /system/etc/clearpad_fwloader.sh
 
@@ -154,384 +78,452 @@ on early-boot
    chmod 0600 /sys/class/graphics/fb1/cec_logical_addr
    chmod 0400 /sys/class/graphics/fb1/cec_rd_frame
    chmod 0200 /sys/class/graphics/fb1/cec_wr_frame
+   # Permissions for AKM897x sensor
+   chown system system /data/misc/akm_set.txt
+   chown system system /sys/class/compass/akm8972/interval
+   chown system system /sys/class/compass/akm8972/single
+   chown system system /sys/class/compass/akm8972/registers
+   chown system system /sys/class/compass/akm8975/interval
+   chown system system /sys/class/compass/akm8975/single
+   chown system system /sys/class/compass/akm8975/registers
 
 on boot
-    chmod 0666 /dev/mtp
+# Optimized browser caching and connection handling
+#   setprop net.http.idle_cache.size  40
+#   setprop net.http.threads  10
+#   setprop net.webkit.cache.size  12582912
+#   setprop net.nw.cache.prioadvstep  86400000
+#   setprop net.nw.cache.weightadvstep  3600000
+#   setprop net.nw.cache.orderby  weight
+#   setprop net.http.idle_cache.shutdown  true
+#   setprop net.webkit.cache.mindeadsize  4194304
+#   setprop net.webkit.cache.maxdeadsize  4194304
 
-    exec /system/bin/usbeng
+   # Enable Wifi EAP SIM
+   setprop ro.wifi.eap_sim_enabled true
 
-    # Disable C_A_D
-    exec system/bin/ctrlaltdel soft
+   rm /data/datarequest_flg
+   write /data/datarequest_flg 12
+   chmod 644 /data/datarequest_flg
+
+   cp /etc/firmware/cal.bin /data/cal.bin
+
+   chmod 0666 /dev/mtp
+#   exec /system/bin/usbeng
+
+   # Disable C_A_D
+#   exec system/bin/ctrlaltdel soft
+
+   setprop ro.wifi.wps_enable true
+   write /proc/sys/kernel/sysrq 0
+   exec /system/bin/cal_data_manager
+   write /sys/module/usb_storage/parameters/delay_use 2
+
+   chown system system /sys/module/sco/parameters/disable_esco
+
+   chmod 0660 /sys/devices/platform/msm_serial_hs.0/clock
+
+   mkdir /data/misc/wifi 0770 wifi wifi
+   mkdir /data/misc/wifi/sockets 0771 wifi wifi
+   chmod 0660 /data/misc/wifi/wpa_supplicant.conf
+   mkdir /data/misc/dhcp 0770 dhcp system
+
+   #Set SUID bit for diag_mdlog
+   chmod 4755 /system/bin/diag_mdlog
+
+   # LM35xx/cameralight
+   chown system system /sys/devices/i2c-3/3-0053/torch_enable
+   chown system system /sys/devices/i2c-3/3-0053/torch_current
+   chown system system /sys/devices/i2c-3/3-0053/privacy_enable
+   chown system system /sys/devices/i2c-3/3-0053/privacy_current
+   chown system system /sys/devices/i2c-3/3-0053/flash_enable
+   chown system system /sys/devices/i2c-3/3-0053/flash_duration
+   chown system system /sys/devices/i2c-3/3-0053/flash_synchronization
+   chown system system /sys/devices/i2c-3/3-0053/flash_current
+   chown system system /sys/devices/i2c-3/3-0053/status
+
+   # Owner for the proximity sensor
+   chown system system /sys/devices/i2c-3/3-0054/threshold
+   chown system system /sys/class/input/input6/bma250_rate
+   chmod 0666 /sys/class/input/input6/bma250_rate
+
+   # Default tcp buffersizes for hsdpa
+   setprop net.tcp.buffersize.hsdpa 5840,87380,165467,4096,16384,110208
+   setprop net.tcp.buffersize.hspa 5840,87380,165467,4096,16384,110208
+
+   # Permissions for Liblights.
+   chown system system /sys/class/leds/green/brightness
+   chown system system /sys/class/leds/green/trigger
+   chown system system /sys/class/leds/red/brightness
+   chown system system /sys/class/leds/red/trigger
+   chown system system /sys/class/leds/blue/brightness
+   chown system system /sys/class/leds/blue/trigger
+   chown system system /sys/class/leds/button-backlight/brightness
+   chown system system /sys/class/leds/button-backlight/trigger
+   chown system system /sys/class/leds/lcd-backlight/brightness
+   chown system system /sys/class/leds/lcd-backlight/als/curve
+   chown system system /sys/class/leds/keyboard-backlight/brightness
+   chown system system /sys/devices/i2c-3/3-0040/adc_als_value
+
+   # bluetooth power up/down interface
+   chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
+   chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
+   chmod 0660                /sys/class/rfkill/rfkill0/state
+
+   # bluetooth address programming
+   setprop ro.bt.bdaddr_path data/etc/bluetooth_bdaddr
+
+   # power-management
+   write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor ondemand
+   write /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor ondemand
+   write /sys/devices/system/cpu/cpu0/cpufreq/ondemand/sampling_rate 50000
+   write /sys/devices/system/cpu/cpu1/cpufreq/ondemand/sampling_rate 50000
+   write /sys/devices/system/cpu/cpu0/cpufreq/ondemand/up_threshold 90
+   write /sys/devices/system/cpu/cpu1/cpufreq/ondemand/up_threshold 90
+   write /sys/devices/system/cpu/cpufreq/ondemand/io_is_busy 1
+   write /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor 4
+   write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 384000
+   write /sys/devices/system/cpu/cpu1/cpufreq/scaling_min_freq 384000
+
+   write /sys/module/rpm_resources/enable_low_power/L2_cache 1
+   write /sys/module/rpm_resources/enable_low_power/pxo 1
+   write /sys/module/rpm_resources/enable_low_power/vdd_dig 2
+   write /sys/module/rpm_resources/enable_low_power/vdd_mem 2
+   write /sys/module/rpm_resources/enable_low_power/rpm_cpu 1
+
+   write /sys/module/pm_8x60/modes/cpu0/power_collapse/suspend_enabled 1
+   write /sys/module/pm_8x60/modes/cpu1/power_collapse/suspend_enabled 1
+   write /sys/module/pm_8x60/modes/cpu0/standalone_power_collapse/suspend_enabled 1
+   write /sys/module/pm_8x60/modes/cpu1/standalone_power_collapse/suspend_enabled 1
+   write /sys/module/pm_8x60/modes/cpu0/power_collapse/idle_enabled 1
+   write /sys/module/pm_8x60/modes/cpu1/power_collapse/idle_enabled 1
+   write /sys/module/pm_8x60/modes/cpu0/standalone_power_collapse/idle_enabled 1
+   write /sys/module/pm_8x60/modes/cpu1/standalone_power_collapse/idle_enabled 1
 
 
+   chown root.system /sys/devices/system/cpu/mfreq
+   chmod 220 /sys/devices/system/cpu/mfreq
+   chown root.system /sys/devices/system/cpu/cpu1/online
+   chmod 664 /sys/devices/system/cpu/cpu1/online
 
-    setprop ro.wifi.wps_enable true
+   # Create the directories and files expected by the lcatp service
+   # only found in eng builds.
+   # Preferably the ONLY_IN_VARIANT macro should be used but
+   # seems like the build system does not parse this file properly.
+   mkdir /data/misc/tsce 0770 system system
+   write /data/misc/tsce/userfile.txt 0
+   write /data/misc/tsce/userfile2.txt 0
+   write /data/misc/tsce/logfile.txt 0
+   chown system system /data/misc/tsce/userfile.txt
+   chown system system /data/misc/tsce/userfile2.txt
+   chown system system /data/misc/tsce/logfile.txt
+   chmod 0660 /data/misc/tsce/userfile.txt
+   chmod 0660 /data/misc/tsce/userfile2.txt
+   chmod 0660 /data/misc/tsce/logfile.txt
 
-    write /proc/sys/kernel/sysrq 0
 
-    exec /system/bin/cal_data_manager
-
-    write /sys/module/usb_storage/parameters/delay_use 2
-
-service port-bridge /system/bin/port-bridge /dev/smd0 /dev/ttyGS0
-    class main
-    disabled
-    oneshot
-
-on property:persist.service.adb.enable=1
-    exec /init.usbmode.sh
-
-on property:persist.service.adb.enable=0
-    exec /init.usbmode.sh
-
-on property:persist.usb.eng=1
-    exec /init.usbmode.sh
-
-on property:persist.usb.eng=0
-    exec /init.usbmode.sh
-
-on property:usb.rndis.enable=1
-    exec /init.usbmode.sh
-
-on property:usb.rndis.enable=0
-    exec /init.usbmode.sh
-
-on property:usb.pcc.enable=1
-    exec /init.usbmode.sh
-
-on property:usb.pcc.enable=0
-    exec /init.usbmode.sh
-
-on property:usb.accessory.enable=0
-    exec /init.usbmode.sh
-
-service illumination /system/bin/illumination_service
-    class main
-
-service touchd /system/bin/touchd
-    class main
-
-service time_daemon /system/bin/time_daemon
-    class main
-    user root
-    group root
-    oneshot
-    disabled
-
-on property:persist.timed.enable=true
-    mkdir /data/time/ 0700 system system
-    start time_daemon
+on post-fs
+   # Run pre_hw_config.sh before entering Charge only mode.
+   exec /system/bin/sh /system/etc/pre_hw_config.sh
 
 # mount mmc partitions
 on fs
-    # mount /system, set up links to the modem, and remount r/o
-    wait /dev/block/mmcblk0p12
-    exec /sbin/resize2fs /dev/block/mmcblk0p12
-    mount ext4 /dev/block/mmcblk0p12 /system rw barrier=1
-    mkdir /system/etc/firmware/misc 0771 system system
-    mount ext4 /dev/block/mmcblk0p12 /system remount ro barrier=1
+   # mount /system, set up links to the modem, and remount r/o
+   wait /dev/block/mmcblk0p12
+   exec /sbin/resize2fs /dev/block/mmcblk0p12
+   mount ext4 /dev/block/mmcblk0p12 /system rw barrier=1
+   mkdir /system/etc/firmware/misc 0771 system system
+   mount ext4 /dev/block/mmcblk0p12 /system remount ro barrier=1
 
-    # mount other partitions
-    wait /dev/block/mmcblk0p14
-    exec /sbin/resize2fs /dev/block/mmcblk0p14
-    exec /system/bin/e2fsck -p /dev/block/mmcblk0p14
-    mount ext4 /dev/block/mmcblk0p14 /data nosuid nodev barrier=1 noauto_da_alloc
+   # mount other partitions
+   wait /dev/block/mmcblk0p14
+   exec /sbin/resize2fs /dev/block/mmcblk0p14
+   exec /system/bin/e2fsck -p /dev/block/mmcblk0p14
+   mount ext4 /dev/block/mmcblk0p14 /data nosuid nodev barrier=1 noauto_da_alloc
 
-    exec /sbin/resize2fs /dev/block/mmcblk0p13
-    mount ext4 /dev/block/mmcblk0p13 /cache nosuid nodev barrier=1
+   exec /sbin/resize2fs /dev/block/mmcblk0p13
+   mount ext4 /dev/block/mmcblk0p13 /cache nosuid nodev barrier=1
 
-    setprop ro.emmc 1
+   setprop ro.emmc 1
 
-    # SEMC, TA Daemon
-    class_start trimarea
-    exec /system/bin/wait4tad
-    exec /sbin/mr
-    exec /sbin/checkabortedflash
+   # SEMC, TA Daemon
+   class_start trimarea
+   exec /system/bin/wait4tad
+   exec /sbin/mr
+   exec /sbin/checkabortedflash
 
-    export EXTERNAL_STORAGE /mnt/sdcard
-    mkdir /mnt/sdcard 0000 system system
-    symlink /mnt/sdcard /sdcard
+   export EXTERNAL_STORAGE /mnt/sdcard
+   mkdir /mnt/sdcard 0000 system system
+   symlink /mnt/sdcard /sdcard
 
 on post-fs
-    chmod 0664 /sys/devices/platform/msm_sdcc.1/polling
-    chmod 0664 /sys/devices/platform/msm_sdcc.3/polling
-    chmod 0664 /sys/devices/platform/msm_sdcc.4/polling
+   chmod 0664 /sys/devices/platform/msm_sdcc.1/polling
+   chmod 0664 /sys/devices/platform/msm_sdcc.3/polling
+   chmod 0664 /sys/devices/platform/msm_sdcc.4/polling
 
-    mkdir /data/radio 0770 radio radio
+   mkdir /data/radio 0770 radio radio
 
-    mkdir /data/idd 0755 idd idd
-    exec /sbin/resize2fs /dev/block/mmcblk0p10
-    mount ext4 /dev/block/mmcblk0p10 /data/idd nosuid nodev barrier=0
-    chown idd idd /data/idd
-    chmod 0755 /data/idd
-
-on early-boot
-    # Permissions for AKM897x sensor
-    chown system system /data/misc/akm_set.txt
-    chown system system /sys/class/compass/akm8972/interval
-    chown system system /sys/class/compass/akm8972/single
-    chown system system /sys/class/compass/akm8972/registers
-    chown system system /sys/class/compass/akm8975/interval
-    chown system system /sys/class/compass/akm8975/single
-    chown system system /sys/class/compass/akm8975/registers
-
-on boot
-    chown system system /sys/module/sco/parameters/disable_esco
-
-    chmod 0660 /sys/devices/platform/msm_serial_hs.0/clock
-
-    mkdir /data/misc/wifi 0770 wifi wifi
-    mkdir /data/misc/wifi/sockets 0771 wifi wifi
-    chmod 0660 /data/misc/wifi/wpa_supplicant.conf
-    mkdir /data/misc/dhcp 0770 dhcp system
-
-    #Set SUID bit for diag_mdlog
-    chmod 4755 /system/bin/diag_mdlog
-
-    # LM35xx/cameralight
-    chown system system /sys/devices/i2c-3/3-0053/torch_enable
-    chown system system /sys/devices/i2c-3/3-0053/torch_current
-    chown system system /sys/devices/i2c-3/3-0053/privacy_enable
-    chown system system /sys/devices/i2c-3/3-0053/privacy_current
-    chown system system /sys/devices/i2c-3/3-0053/flash_enable
-    chown system system /sys/devices/i2c-3/3-0053/flash_duration
-    chown system system /sys/devices/i2c-3/3-0053/flash_synchronization
-    chown system system /sys/devices/i2c-3/3-0053/flash_current
-    chown system system /sys/devices/i2c-3/3-0053/status
-
-    # Owner for the proximity sensor
-    chown system system /sys/devices/i2c-3/3-0054/threshold
-
-    # Default tcp buffersizes for hsdpa
-    setprop net.tcp.buffersize.hsdpa 5840,87380,165467,4096,16384,110208
-    setprop net.tcp.buffersize.hspa 5840,87380,165467,4096,16384,110208
-
-    # Permissions for Liblights.
-    chown system system /sys/class/leds/green/brightness
-    chown system system /sys/class/leds/green/trigger
-    chown system system /sys/class/leds/red/brightness
-    chown system system /sys/class/leds/red/trigger
-    chown system system /sys/class/leds/blue/brightness
-    chown system system /sys/class/leds/blue/trigger
-    chown system system /sys/class/leds/button-backlight/brightness
-    chown system system /sys/class/leds/button-backlight/trigger
-    chown system system /sys/class/leds/lcd-backlight/brightness
-    chown system system /sys/class/leds/lcd-backlight/als/curve
-    chown system system /sys/class/leds/keyboard-backlight/brightness
-    chown system system /sys/devices/i2c-3/3-0040/adc_als_value
-
-    # bluetooth power up/down interface
-    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
-    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
-    chmod 0660                /sys/class/rfkill/rfkill0/state
-
-    # bluetooth address programming
-    setprop ro.bt.bdaddr_path data/etc/bluetooth_bdaddr
-
-    # power-management
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor ondemand
-    write /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor ondemand
-    write /sys/devices/system/cpu/cpu0/cpufreq/ondemand/sampling_rate 50000
-    write /sys/devices/system/cpu/cpu1/cpufreq/ondemand/sampling_rate 50000
-    write /sys/devices/system/cpu/cpu0/cpufreq/ondemand/up_threshold 90
-    write /sys/devices/system/cpu/cpu1/cpufreq/ondemand/up_threshold 90
-    write /sys/devices/system/cpu/cpufreq/ondemand/io_is_busy 1
-    write /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor 4
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 384000
-    write /sys/devices/system/cpu/cpu1/cpufreq/scaling_min_freq 384000
-
-    write /sys/module/rpm_resources/enable_low_power/L2_cache 1
-    write /sys/module/rpm_resources/enable_low_power/pxo 1
-    write /sys/module/rpm_resources/enable_low_power/vdd_dig 2
-    write /sys/module/rpm_resources/enable_low_power/vdd_mem 2
-    write /sys/module/rpm_resources/enable_low_power/rpm_cpu 1
-
-    write /sys/module/pm_8x60/modes/cpu0/power_collapse/suspend_enabled 1
-    write /sys/module/pm_8x60/modes/cpu1/power_collapse/suspend_enabled 1
-    write /sys/module/pm_8x60/modes/cpu0/standalone_power_collapse/suspend_enabled 1
-    write /sys/module/pm_8x60/modes/cpu1/standalone_power_collapse/suspend_enabled 1
-    write /sys/module/pm_8x60/modes/cpu0/power_collapse/idle_enabled 1
-    write /sys/module/pm_8x60/modes/cpu1/power_collapse/idle_enabled 1
-    write /sys/module/pm_8x60/modes/cpu0/standalone_power_collapse/idle_enabled 1
-    write /sys/module/pm_8x60/modes/cpu1/standalone_power_collapse/idle_enabled 1
-
-
-    chown root.system /sys/devices/system/cpu/mfreq
-    chmod 220 /sys/devices/system/cpu/mfreq
-    chown root.system /sys/devices/system/cpu/cpu1/online
-    chmod 664 /sys/devices/system/cpu/cpu1/online
-
-    # Create the directories and files expected by the lcatp service
-    # only found in eng builds.
-    # Preferably the ONLY_IN_VARIANT macro should be used but
-    # seems like the build system does not parse this file properly.
-    mkdir /data/misc/tsce 0770 system system
-    write /data/misc/tsce/userfile.txt 0
-    write /data/misc/tsce/userfile2.txt 0
-    write /data/misc/tsce/logfile.txt 0
-    chown system system /data/misc/tsce/userfile.txt
-    chown system system /data/misc/tsce/userfile2.txt
-    chown system system /data/misc/tsce/logfile.txt
-    chmod 0660 /data/misc/tsce/userfile.txt
-    chmod 0660 /data/misc/tsce/userfile2.txt
-    chmod 0660 /data/misc/tsce/logfile.txt
+#   mkdir /data/idd 0755 idd idd
+#   exec /sbin/resize2fs /dev/block/mmcblk0p10
+#   mount ext4 /dev/block/mmcblk0p10 /data/idd nosuid nodev barrier=0
+#   chown idd idd /data/idd
+#   chmod 0755 /data/idd
 
 service btld /system/bin/btld -lpm 1
-    class main
-    user root
-    group bluetooth net_bt_admin
-    disabled
-    oneshot
+   class main
+   user root
+   group bluetooth net_bt_admin
+   disabled
+   oneshot
 
 service hciattach /system/bin/brcm_patchram_plus --enable_hci --enable_lpm \
-    --use_baudrate_for_download --reset_baudrate --scopcm 0,4,0,0,0,0,0,0,3,0 \
-    --no2bytes --baudrate 3000000 --patchram /system/etc/firmware/BCM4330.hcd \
-    /dev/ttyHS0
-    class main
-    user bluetooth
-    group bluetooth net_bt_admin
-    disabled
+   --use_baudrate_for_download --reset_baudrate --scopcm 0,4,0,0,0,0,0,0,3,0 \
+   --no2bytes --baudrate 3000000 --patchram /system/etc/firmware/BCM4330.hcd \
+   /dev/ttyHS0
+   class main
+   user bluetooth
+   group bluetooth net_bt_admin
+   disabled
 
 service cnd /system/bin/cnd
-    class main
-    socket cnd stream 660 root radio
+   class main
+   socket cnd stream 660 root radio
 
 service rmt_storage /system/bin/rmt_storage
-    class main
-    user root
-    disabled
+   class main
+   user root
+   disabled
 
 service updatemiscta /system/bin/updatemiscta
-    class main
-    user root
-    disabled
-    oneshot
+   class main
+   user root
+   disabled
+   oneshot
 
 # SEMC, TA rmt service
 service ta_rmt_service /system/bin/ta_rmt_service
-    class main
-    user root
-    disabled
+   class main
+   user root
+   disabled
 
 on property:ro.emmc=1
-    start updatemiscta
-    start rmt_storage
-    start ta_rmt_service
+   start updatemiscta
+   start rmt_storage
+   start ta_rmt_service
 
 # Copy calibration data from NV to kernel drivers
 service nvimport /system/bin/nvimport
-    class main
-    user root
-    oneshot
+   class main
+   user root
+   oneshot
 
 service wpa_supplicant /system/bin/wpa_supplicant -Dwext -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf
-    class main
-    socket wpa_wlan0 dgram 660 wifi wifi
-    disabled
-    oneshot
+   class main
+   socket wpa_wlan0 dgram 660 wifi wifi
+   disabled
+   oneshot
 
 service dhcpcd_wlan0 /system/bin/dhcpcd -B -d wlan0 -t 30
-    class main
-    disabled
-    oneshot
+   class main
+   disabled
+   oneshot
 
 service iprenew_wlan0 /system/bin/dhcpcd -n
-    class main
-    disabled
-    oneshot
+   class main
+   disabled
+   oneshot
 
 service qmuxd /system/bin/qmuxd
-    class main
+   class main
 
 service netmgrd /system/bin/netmgrd
-    class main
+   class main
 
 # SEMC, TA Daemon
 service tad /system/bin/tad /dev/block/mmcblk0p1 0,16,256
-    class main
-    user root
-    group root
-    socket tad stream 0660 system system
-    class trimarea
+   class main
+   user root
+   group root
+   socket tad stream 0660 system system
+   class trimarea
 
 service hw_config /system/bin/sh /system/etc/hw_config.sh
-    class main
-    user root
-    oneshot
+   class main
+   user root
+   oneshot
 
 # Local Connectivity service only present in engineer builds
 # Preferably the ONLY_IN_VARIANT macro should be used but
 # seems like the build system does not parse this file properly.
 service lcatp /system/bin/lcatp
-    class main
-    disabled
-    oneshot
+   class main
+   disabled
+   oneshot
 
 on property:ro.use_data_netmgrd=false
-    # netmgr not supported on specific target
-    stop netmgrd
+   # netmgr not supported on specific target
+   stop netmgrd
 
 service mpdecision /system/bin/mpdecision --no_sleep --avg_comp
-    user root
-    disabled
+   user root
+   disabled
 
 service thermald /system/bin/thermald -c /system/etc/thermald-semc.conf
-    socket thermald stream 0666 root root
-    user root
-    disabled
+   socket thermald stream 0666 root root
+   user root
+   disabled
 
 on property:init.svc.bootanim=stopped
-    start mpdecision
-    start thermald
+   start mpdecision
+   start thermald
 
 service media /system/bin/mediaserver
-    class main
-    user media
-    group system audio camera graphics inet net_bt net_bt_admin net_raw radio
-    ioprio rt 4
+   class main
+   user media
+   group system audio camera graphics inet net_bt net_bt_admin net_raw radio
+   ioprio rt 4
 
 service nvcustomizer /system/bin/nvcustomizer
-    class main
-    user root
-    oneshot
-    disabled
+   class main
+   user root
+   oneshot
+   disabled
 
 on property:ro.nvcust=1
-    start nvcustomizer
+   start nvcustomizer
 
 # ro.hsdpa_cat set by nvimport
 on property:ro.hsdpa_cat=8
-    setprop net.tcp.buffersize.hsdpa 5840,87380,165467,4096,16384,110208
-    setprop net.tcp.buffersize.hspa 5840,87380,165467,4096,16384,110208
+   setprop net.tcp.buffersize.hsdpa 5840,87380,165467,4096,16384,110208
+   setprop net.tcp.buffersize.hspa 5840,87380,165467,4096,16384,110208
 on property:ro.hsdpa_cat=10
-    setprop net.tcp.buffersize.hsdpa 5840,87380,276427,4096,16384,110208
-    setprop net.tcp.buffersize.hspa 5840,87380,276427,4096,16384,110208
-
-on boot
-    rm /data/datarequest_flg
-    write /data/datarequest_flg 12
-    chmod 644 /data/datarequest_flg
+   setprop net.tcp.buffersize.hsdpa 5840,87380,276427,4096,16384,110208
+   setprop net.tcp.buffersize.hspa 5840,87380,276427,4096,16384,110208
 
 service hdmid /system/bin/hdmid
-    class main
-    user system
-    group system inet graphics
-
-on init
-    # setup the global environment
-    export EXTERNAL_STORAGE_ALL /mnt/sdcard:/mnt/usbdisk
-    export EXTERNAL_STORAGE_USB /mnt/usbdisk
-
-    # create mountpoint
-    mkdir /mnt/usbdisk 0000 system system
-
-    # Create symlink
-    symlink /mnt/usbdisk /usbdisk
-
-on boot
-    # Enable Wifi EAP SIM
-    setprop ro.wifi.eap_sim_enabled true
+   class main
+   user system
+   group system inet graphics
 
 service semcwall /system/bin/semcwall
-    class main
-    user root
+   class main
+   user root
+
+# Fast Dormancy
+service fast-dormancy /system/bin/fast-dormancy
+   class main
+
+on property:ro.semc.enable.fast_dormancy=false
+stop fast-dormancy
+
+service updatemiscta /system/bin/updatemiscta
+   class main
+   user root
+   oneshot
+
+service port-bridge /system/bin/port-bridge /dev/smd0 /dev/ttyGS0
+   class main
+   disabled
+   oneshot
+
+service illumination /system/bin/illumination_service
+   class main
+
+service touchd /system/bin/touchd
+   class main
+
+service time_daemon /system/bin/time_daemon
+   class main
+   user root
+   group root
+   oneshot
+   disabled
+
+on property:persist.timed.enable=true
+   mkdir /data/time/ 0700 system system
+   start time_daemon
+
+service secchan /system/bin/secchand
+   class main
+   user system
+   group system
+
+# Start suntrold
+service suntrold /system/bin/suntrold
+   class main
+   user system
+   group system
+   oneshot
+
+#service iddd /system/bin/iddd
+#    class main
+#    user idd
+#    group idd log
+
+# Set the startup flag to boot complete, run on property change
+#service setssflagbc /system/bin/startupflag bootcomplete
+#    class main
+#    user root
+#    oneshot
+#    disabled
+
+# AT+CTSA and AT+CKPD support
+#service atfwd-daemon /system/bin/atfwd-daemon
+#    class main
+#    user root
+#    oneshot
+#    disabled
+
+#service fota-snoop /system/bin/fota-snoop
+#    class main
+#    group cache
+#    oneshot
+#    disabled
+
+#on property:dev.bootcomplete=1
+#    start setssflagbc
+#    start atfwd-daemon
+#    start fota-snoop
+
+#on property:persist.kernel.log=logcat
+#    stop klogrouterd
+#    start klogrouterd
+
+#on property:persist.kernel.log=uart
+#    stop klogrouterd
+#    exec /system/bin/klogrouter uart
+
+#on property:persist.kernel.log=default
+#    stop klogrouterd
+#    exec /system/bin/klogrouter default
+
+#service klogrouterd /system/bin/klogrouter logcat
+#    class main
+#    oneshot
+
+#on property:persist.service.adb.enable=1
+#    exec /init.usbmode.sh
+
+#on property:persist.service.adb.enable=0
+#    exec /init.usbmode.sh
+
+#on property:persist.usb.eng=1
+#    exec /init.usbmode.sh
+
+#on property:persist.usb.eng=0
+#    exec /init.usbmode.sh
+
+#on property:usb.rndis.enable=1
+#    exec /init.usbmode.sh
+
+#on property:usb.rndis.enable=0
+#    exec /init.usbmode.sh
+
+#on property:usb.pcc.enable=1
+#    exec /init.usbmode.sh
+
+#on property:usb.pcc.enable=0
+#    exec /init.usbmode.sh
+
+#on property:usb.accessory.enable=0
+#    exec /init.usbmode.sh

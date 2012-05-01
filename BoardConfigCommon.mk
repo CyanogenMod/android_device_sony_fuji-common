@@ -71,3 +71,8 @@ TARGET_NEEDS_BLUETOOTH_INIT_DELAY := true
 # Custom boot
 BOARD_CUSTOM_BOOTIMG_MK := device/sony/fuji-common/custombootimg.mk
 TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT := device/sony/fuji-common/releasetools/semc_ota_from_target_files
+
+BOARD_UMS_LUNFILE := "/sys/devices/platform/msm_hsusb/gadget/lun0/file"
+TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/devices/platform/msm_hsusb/gadget/lun0/file"
+
+

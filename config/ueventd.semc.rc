@@ -91,3 +91,6 @@
 /dev/mpu                  0600  system      system
 /dev/mpuirq               0600  system      system
 /dev/timerirq             0600  system      system
+
+/dev/graphics/fb0       0666   system      system
+/dev/graphics/fb1       0666   system      system

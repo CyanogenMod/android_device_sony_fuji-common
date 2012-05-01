@@ -48,8 +48,8 @@ PRODUCT_PACKAGES += \
     libOmxCore \
     libOmxVdec \
     libOmxVenc \
-		libOmxAacEnc \
-		libOmxAmrEnc \
+    libOmxAacEnc \
+    libOmxAmrEnc \
     libstagefrighthw
 
 # GPS
@@ -108,3 +108,6 @@ PRODUCT_COPY_FILES += \
     bootable/recovery/res/images/indeterminate06.png:root/res/images/indeterminate06.png \
     bootable/recovery/res/images/progress_empty.png:root/res/images/progress_empty.png \
     bootable/recovery/res/images/progress_fill.png:root/res/images/progress_fill.png
+
+PRODUCT_PROPERTY_OVERRIDES += \
+    persist.sys.usb.config=mass_storage
