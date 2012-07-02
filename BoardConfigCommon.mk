@@ -37,9 +37,42 @@ BOARD_KERNEL_PAGESIZE := 2048
 BOARD_FORCE_RAMDISK_ADDRESS := 0x41200000
 TARGET_USES_2G_VM_SPLIT := true
 
+# Wifi related defines
+WIFI_BAND                        := 802_11_ABG
+WPA_SUPPLICANT_VERSION           := VER_0_8_X
+BOARD_WPA_SUPPLICANT_DRIVER      := NL80211
+BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_bcmdhd
+BOARD_HOSTAPD_DRIVER             := NL80211
+BOARD_HOSTAPD_PRIVATE_LIB        := lib_driver_cmd_bcmdhd
+BOARD_WLAN_DEVICE                := bcmdhd
+WIFI_DRIVER_FW_PATH_STA          := "/vendor/firmware/fw_bcmdhd.bin"
+WIFI_DRIVER_FW_PATH_AP           := "/vendor/firmware/fw_bcmdhd_apsta.bin"
+WIFI_DRIVER_FW_PATH_P2P          := "/vendor/firmware/fw_bcmdhd_p2p.bin"
+WIFI_DRIVER_FW_PATH_PARAM        := "/sys/module/bcmdhd/parameters/firmware_path"
+
+# Audio
+COMMON_GLOBAL_CFLAGS += -DWITH_QCOM_LPA
+TARGET_USES_QCOM_LPA := true
+
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_BCM := true
+
+# QCOM hardware
+BOARD_USES_QCOM_HARDWARE := true
+BOARD_USES_QCOM_GPS := true
+BOARD_VENDOR_QCOM_GPS_LOC_API_AMSS_VERSION := 50000
+
+# Graphics
+USE_OPENGL_RENDERER := true
+TARGET_HAVE_BYPASS := false
+TARGET_USES_C2D_COMPOSITION := true
+TARGET_USES_OVERLAY := true
+TARGET_USES_GENLOCK := true
+TARGET_QCOM_HDMI_OUT := true
+TARGET_QCOM_HDMI_RESOLUTION_AUTO := true
+BOARD_EGL_CFG := device/sony/fuji-common/config/egl.cfg
+TARGET_FORCE_CPU_UPLOAD := true
 
 # QCOM hardware
 BOARD_USES_QCOM_HARDWARE := true
@@ -52,29 +85,19 @@ BOARD_USES_QCOM_GPS := true
 BOARD_VENDOR_QCOM_GPS_LOC_API_HARDWARE := semc
 BOARD_VENDOR_QCOM_GPS_LOC_API_AMSS_VERSION := 50000
 
-# Graphics
-USE_OPENGL_RENDERER := true
-TARGET_HAVE_BYPASS := false
-TARGET_USES_C2D_COMPOSITION := true
-TARGET_USES_GENLOCK := true
-TARGET_USES_OVERLAY := true
-TARGET_QCOM_HDMI_OUT := true
-BOARD_EGL_CFG := device/sony/fuji-common/config/egl.cfg
-TARGET_FORCE_CPU_UPLOAD := true
-TARGET_RECOVERY_PIXEL_FORMAT := "BGRX_8888"
-BOARD_CUSTOM_GRAPHICS := ../../../device/sony/fuji-common/recovery/recovery-gfx.c
-BOARD_CUSTOM_RECOVERY_KEYMAPPING := ../../device/sony/fuji-common/recovery/recovery-keys.c
-
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_BCM := true
 TARGET_NEEDS_BLUETOOTH_INIT_DELAY := true
 
 # Custom boot
+TARGET_RECOVERY_PIXEL_FORMAT := "BGRX_8888"
 BOARD_CUSTOM_BOOTIMG_MK := device/sony/fuji-common/custombootimg.mk
 TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT := device/sony/fuji-common/releasetools/semc_ota_from_target_files
+BOARD_CUSTOM_GRAPHICS := ../../../device/sony/fuji-common/recovery/recovery-gfx.c
+BOARD_CUSTOM_RECOVERY_KEYMAPPING := ../../device/sony/fuji-common/recovery/recovery-keys.c
 
 BOARD_UMS_LUNFILE := "/sys/devices/platform/msm_hsusb/gadget/lun0/file"
 TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/devices/platform/msm_hsusb/gadget/lun0/file"
 
-
+TARGET_BOOTANIMATION_PRELOAD := true
