@@ -434,7 +434,7 @@ on boot
     
     
 
-    insmod /system/lib/modules/bcm4330.ko nvram_path=/system/etc/wifi/calibration iface_name=wlan0
+    insmod /system/lib/modules/bcmdhd.ko nvram_path=/system/etc/wifi/calibration iface_name=wlan0
 
 service btld /system/bin/btld -lpm 1
     user root

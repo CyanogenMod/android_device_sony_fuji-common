@@ -1,5 +1,8 @@
 $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)
 
+# Wifi
+$(call inherit-product-if-exists, hardware/broadcom/wlan/bcmdhd/firmware/bcm4329/device-bcm.mk)
+
 DEVICE_PACKAGE_OVERLAYS += device/sony/fuji-common/overlay
 
 # Permissions

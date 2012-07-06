@@ -1,4 +1,4 @@
-/dev/msm_vpe_standalone              0660   system     system
+/dev/msm_vpe_standalone              0777   system     system
 /sys/devices/i2c-3/3-0040/leds/* delay_on  0644 system system
 /sys/devices/i2c-3/3-0040/leds/* delay_off 0644 system system
 
