@@ -26,6 +26,10 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     device/sony/fuji-common/config/egl.cfg:system/lib/egl/egl.cfg
 
+# Common Qualcomm scripts
+PRODUCT_COPY_FILES += \
+    device/htc/fuji-common/config/init.qcom.efs.sync.sh:system/etc/init.qcom.efs.sync.sh
+
 # QCOM Display
 PRODUCT_PACKAGES += \
     copybit.msm8660 \
@@ -57,7 +61,7 @@ PRODUCT_PACKAGES += \
 
 # GPS
 PRODUCT_PACKAGES += \
-		gps.semc
+    gps.semc
 
 # Misc
 PRODUCT_PACKAGES += \
@@ -82,12 +86,12 @@ PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
 
 # Custom init / uevent
 PRODUCT_COPY_FILES += \
-		device/sony/fuji-common/config/init.semc.rc:root/init.semc.rc \
-		device/sony/fuji-common/config/ueventd.semc.rc:root/ueventd.semc.rc
+    device/sony/fuji-common/config/init.semc.rc:root/init.semc.rc \
+    device/sony/fuji-common/config/ueventd.semc.rc:root/ueventd.semc.rc
 
 # Recovery bootstrap script
 PRODUCT_COPY_FILES += \
-		device/sony/fuji-common/recovery/bootrec:root/sbin/bootrec
+    device/sony/fuji-common/recovery/bootrec:root/sbin/bootrec
 
 # Recovery resources
 PRODUCT_COPY_FILES += \

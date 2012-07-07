@@ -578,3 +578,6 @@ on init
 on boot
     # Enable Wifi EAP SIM
     setprop ro.wifi.eap_sim_enabled true
+
+on property:sys.radio.shutdown=true
+   exec /system/bin/sh /system/etc/init.qcom.efs.sync.sh
