@@ -5,6 +5,34 @@ on early-fs
     # by the system.
     # exec /sbin/grabramdump
 
+on fs
+# mount mmc partitions
+    # mount /system, set up links to the modem, and remount r/o
+    wait /dev/block/mmcblk0p12
+    mount ext4 /dev/block/mmcblk0p12 /system rw barrier=1
+    mkdir /system/etc/firmware/misc 0771 system system
+    mount ext4 /dev/block/mmcblk0p12 /system remount ro barrier=1
+
+    # mount other partitions
+    wait /dev/block/mmcblk0p14
+    exec /system/bin/e2fsck -p /dev/block/mmcblk0p14
+    setprop ro.crypto.state unsupported
+    mount ext4 /dev/block/mmcblk0p14 /data nosuid nodev noatime barrier=1 noauto_da_alloc
+
+    mount ext4 /dev/block/mmcblk0p13 /cache nosuid nodev noatime barrier=1
+
+    # FOTA must be started after partitions are mounted
+    # and property service is initialized
+    exec /sbin/fota-ua c
+
+    setprop ro.emmc 1
+
+    # SEMC, TA Daemon
+    class_start trimarea
+    exec /system/bin/wait4tad
+    exec /system/bin/mr
+    exec /sbin/checkabortedflash
+
 on post-fs
     mkdir /data/tombstones 0755 system system
     mkdir /data/crashsms 0711 system system
@@ -14,17 +42,158 @@ on post-fs
     # Change to socket location on libkeyctrl/suntory for /data encryption
     mkdir /dev/socket/suntory 0755 system system
 
+    chmod 0664 /sys/devices/platform/msm_sdcc.1/polling
+    chmod 0664 /sys/devices/platform/msm_sdcc.3/polling
+    chmod 0664 /sys/devices/platform/msm_sdcc.4/polling
+
+    mkdir /data/radio 0770 radio radio
+
+    mkdir /data/idd 0755 idd idd
+    mount ext4 /dev/block/mmcblk0p10 /data/idd nosuid nodev noatime barrier=0
+    chown idd idd /data/idd
+    chmod 0755 /data/idd
+
+    # Camera
+    mkdir /data/camera 0771 root camera
+
+    #Create QMUX deamon socket area
+    mkdir /dev/socket/qmux_radio 0770 radio radio
+    chmod 2770 /dev/socket/qmux_radio
+    mkdir /dev/socket/qmux_audio 0770 media audio
+    chmod 2770 /dev/socket/qmux_audio
+    mkdir /dev/socket/qmux_bluetooth 0770 bluetooth bluetooth
+    chmod 2770 /dev/socket/qmux_bluetooth
+
 on early-boot
     # Start the offline charging (This blocks booting further in some cases)
     exec sbin/bootrec
 
-    
-    
-
     # Make sure the crashsms/crashes are writable by crashmonitor
-    
-    
 
+on boot
+# Optimized browser caching and connection handling
+    setprop net.http.idle_cache.size  40
+    setprop net.http.threads  10
+    setprop net.webkit.cache.size  12582912
+    setprop net.nw.cache.prioadvstep  86400000
+    setprop net.nw.cache.weightadvstep  3600000
+    setprop net.nw.cache.orderby  weight
+    setprop net.http.idle_cache.shutdown  true
+    setprop net.webkit.cache.mindeadsize  4194304
+    setprop net.webkit.cache.maxdeadsize  4194304
+
+    exec /system/bin/usbeng
+
+    # Disable C_A_D
+    exec system/bin/ctrlaltdel soft
+
+    # USB Host support
+    mkdir /dev/bus 0711 system system
+    mkdir /dev/bus/usb 0711 system system
+
+    write /sys/class/android_usb/android0/iManufacturer $ro.product.manufacturer
+    write /sys/class/android_usb/android0/iProduct $ro.product.model
+
+    setprop ro.wifi.wps_enable true
+
+    write /proc/sys/kernel/sysrq 0
+    write /proc/sys/kernel/watchdog_thresh 5
+
+    exec /system/bin/cal_data_manager
+
+    # Enable Wifi EAP SIM
+    setprop ro.wifi.eap_sim_enabled true
+
+on init
+    write /sys/class/android_usb/android0/iSerial $ro.serialno
+    write /sys/class/android_usb/android0/f_rndis/manufacturer $ro.product.manufacturer
+    write /sys/class/android_usb/android0/f_rndis/vendorID 0fce
+    write /sys/class/android_usb/android0/f_rndis/wceis 1
+
+    # setup the global environment
+    export EXTERNAL_STORAGE /mnt/sdcard
+    export EXTERNAL_STORAGE_USB /mnt/usbdisk
+
+    # create mountpoint
+    mkdir /mnt/usbdisk 0000 system system
+
+    # Create symlink
+    symlink /mnt/sdcard /sdcard
+    symlink /mnt/usbdisk /usbdisk
+
+    # create mountpoint
+    mkdir /mnt/sdcard 0000 system system
+
+    # setup the global environment
+    export SECONDARY_STORAGE /mnt/usbdisk
+
+on post-fs
+    # Run pre_hw_config.sh before entering Charge only mode.
+    exec /system/bin/sh /system/etc/pre_hw_config.sh
+
+on post-fs-data
+    # Clear dalvik cache
+    exec /init.clrdex.sh
+
+    chown system system /sys/devices/platform/msm_hsusb/gadget/lun1/file
+    chmod 0660 /sys/devices/platform/msm_hsusb/gadget/lun1/file
+    write /sys/class/android_usb/f_mass_storage/inquiry_string "SONY    Mass Storage    0100"
+    write /sys/class/android_usb/f_cdrom/cdrom_inquiry_string "SONY    CD-ROM          0100"
+    write /sys/class/android_usb/f_mass_storage/serial_number $ro.serialno
+    write /sys/class/android_usb/f_mass_storage/eui64_id 000AD90000000000
+    write /sys/devices/platform/msm_hsusb/gadget/lun0/nofua 1
+    write /sys/devices/platform/msm_hsusb/gadget/lun1/nofua 1
+    setprop vold.post_fs_data_done 1
+
+on early-boot
+    # set RLIMIT_MEMLOCK to 64MB
+    setrlimit 8 67108864 67108864
+
+    # Touch firmware update
+    exec /system/bin/sh /system/etc/clearpad_fwloader.sh
+
+    # Remove write permissions to video related nodes
+    chmod 0660 /sys/devices/virtual/graphics/fb1/video_mode
+    chmod 0440 /sys/devices/virtual/graphics/fb1/video_mode_str
+    chmod 0440 /sys/devices/virtual/graphics/fb1/connected
+    chmod 0440 /sys/devices/virtual/graphics/fb1/edid_modes
+    chmod 0440 /sys/devices/virtual/graphics/fb1/hdcp
+    chmod 0660 /sys/devices/virtual/graphics/fb1/hpd
+    chmod 0440 /sys/devices/virtual/graphics/fb1/3d_present
+    chmod 0440 /sys/devices/virtual/graphics/fb1/hdcp_present
+    chmod 0660 /sys/devices/virtual/graphics/fb1/format_3d
+    chmod 0660 /sys/devices/virtual/graphics/fb1/edid_3d_modes
+    chmod 0440 /sys/devices/virtual/graphics/fb1/underscan
+    chmod 0440 /sys/devices/virtual/graphics/fb1/dvi
+    chmod 0440 /sys/devices/virtual/graphics/fb1/pa
+    chmod 0660 /sys/devices/virtual/graphics/fb1/cec
+    chmod 0660 /sys/devices/virtual/graphics/fb1/cec_logical_addr
+    chmod 0660 /sys/devices/virtual/graphics/fb1/cec_wr_frame
+    chmod 0660 /sys/devices/virtual/graphics/fb1/product_description
+    chmod 0660 /sys/devices/virtual/graphics/fb1/vendor_name
+
+    # Change owner and group for system server and surface flinger
+    chown system graphics /sys/devices/virtual/graphics/fb1/video_mode
+    chown system graphics /sys/devices/virtual/graphics/fb1/video_mode_str
+    chown system graphics /sys/devices/virtual/graphics/fb1/connected
+    chown system graphics /sys/devices/virtual/graphics/fb1/edid_modes
+    chown system graphics /sys/devices/virtual/graphics/fb1/hdcp
+    chown system graphics /sys/devices/virtual/graphics/fb1/hpd
+    chown system graphics /sys/devices/virtual/graphics/fb1/3d_present
+    chown system graphics /sys/devices/virtual/graphics/fb1/hdcp_present
+    chown system graphics /sys/devices/virtual/graphics/fb1/format_3d
+    chown system graphics /sys/devices/virtual/graphics/fb1/edid_3d_modes
+    chown system graphics /sys/devices/virtual/graphics/fb1/underscan
+    chown system graphics /sys/devices/virtual/graphics/fb1/dvi
+    chown system graphics /sys/devices/virtual/graphics/fb1/pa
+    chown system graphics /sys/devices/virtual/graphics/fb1/cec
+    chown system graphics /sys/devices/virtual/graphics/fb1/cec_logical_addr
+    chown system graphics /sys/devices/virtual/graphics/fb1/cec_wr_frame
+    chown system graphics /sys/devices/virtual/graphics/fb1/product_description
+    chown system graphics /sys/devices/virtual/graphics/fb1/vendor_name
+
+    # Configurate TCP/IP kernel settings
+    exec /system/bin/sh /system/etc/init.netconfig.sh
 
 service iddd /system/bin/iddd
     class main
@@ -63,153 +232,27 @@ service suntrold /system/bin/suntrold
     group system
     oneshot
 
+service klogrouterd /system/bin/klogrouter logcat
+    oneshot
+    disabled
+
 on property:persist.sys.kernel.log=logcat
     start klogrouterd
 
 on property:persist.sys.kernel.log=default
     stop klogrouterd
 
-service klogrouterd /system/bin/klogrouter logcat
-    oneshot
-    disabled
-
-
-
 # Fast Dormancy
 service fast-dormancy /system/bin/fast-dormancy
     class main
 
 on property:ro.semc.enable.fast_dormancy=false
-stop fast-dormancy
-
-on boot
-# Optimized browser caching and connection handling
-    setprop net.http.idle_cache.size  40
-    setprop net.http.threads  10
-    setprop net.webkit.cache.size  12582912
-    setprop net.nw.cache.prioadvstep  86400000
-    setprop net.nw.cache.weightadvstep  3600000
-    setprop net.nw.cache.orderby  weight
-    setprop net.http.idle_cache.shutdown  true
-    setprop net.webkit.cache.mindeadsize  4194304
-    setprop net.webkit.cache.maxdeadsize  4194304
+    stop fast-dormancy
 
 service secchan /system/bin/secchand
     class main
     user system
     group system
-
-on init
-    write /sys/class/android_usb/android0/iSerial $ro.serialno
-    write /sys/class/android_usb/android0/f_rndis/manufacturer $ro.product.manufacturer
-    write /sys/class/android_usb/android0/f_rndis/vendorID 0fce
-    write /sys/class/android_usb/android0/f_rndis/wceis 1
-
-    # setup the global environment
-    export EXTERNAL_STORAGE /mnt/sdcard
-    export EXTERNAL_STORAGE_USB /mnt/usbdisk
-
-    # create mountpoint
-    mkdir /mnt/usbdisk 0000 system system
-
-    # Create symlink
-    symlink /mnt/sdcard /sdcard
-    symlink /mnt/usbdisk /usbdisk
-
-on post-fs
-   # Run pre_hw_config.sh before entering Charge only mode.
-   exec /system/bin/sh /system/etc/pre_hw_config.sh
-
-on post-fs-data
-    # Clear dalvik cache
-    exec /init.clrdex.sh
-
-    chown system system /sys/devices/platform/msm_hsusb/gadget/lun1/file
-    chmod 0660 /sys/devices/platform/msm_hsusb/gadget/lun1/file
-    write /sys/class/android_usb/f_mass_storage/inquiry_string "SONY    Mass Storage    0100"
-    write /sys/class/android_usb/f_cdrom/cdrom_inquiry_string "SONY    CD-ROM          0100"
-    write /sys/class/android_usb/f_mass_storage/serial_number $ro.serialno
-    write /sys/class/android_usb/f_mass_storage/eui64_id 000AD90000000000
-    write /sys/devices/platform/msm_hsusb/gadget/lun0/nofua 1
-    write /sys/devices/platform/msm_hsusb/gadget/lun1/nofua 1
-    setprop vold.post_fs_data_done 1
-
-on early-boot
-    # set RLIMIT_MEMLOCK to 64MB
-    setrlimit 8 67108864 67108864
-
-   # Touch firmware update
-   exec /system/bin/sh /system/etc/clearpad_fwloader.sh
-
-   # Remove write permissions to video related nodes
-   chmod 0660 /sys/devices/virtual/graphics/fb1/video_mode
-   chmod 0440 /sys/devices/virtual/graphics/fb1/video_mode_str
-   chmod 0440 /sys/devices/virtual/graphics/fb1/connected
-   chmod 0440 /sys/devices/virtual/graphics/fb1/edid_modes
-   chmod 0440 /sys/devices/virtual/graphics/fb1/hdcp
-   chmod 0660 /sys/devices/virtual/graphics/fb1/hpd
-   chmod 0440 /sys/devices/virtual/graphics/fb1/3d_present
-   chmod 0440 /sys/devices/virtual/graphics/fb1/hdcp_present
-   chmod 0660 /sys/devices/virtual/graphics/fb1/format_3d
-   chmod 0660 /sys/devices/virtual/graphics/fb1/edid_3d_modes
-   chmod 0440 /sys/devices/virtual/graphics/fb1/underscan
-   chmod 0440 /sys/devices/virtual/graphics/fb1/dvi
-   chmod 0440 /sys/devices/virtual/graphics/fb1/pa
-   chmod 0660 /sys/devices/virtual/graphics/fb1/cec
-   chmod 0660 /sys/devices/virtual/graphics/fb1/cec_logical_addr
-   chmod 0660 /sys/devices/virtual/graphics/fb1/cec_wr_frame
-   chmod 0660 /sys/devices/virtual/graphics/fb1/product_description
-   chmod 0660 /sys/devices/virtual/graphics/fb1/vendor_name
-
-   # Change owner and group for system server and surface flinger
-   chown system graphics /sys/devices/virtual/graphics/fb1/video_mode
-   chown system graphics /sys/devices/virtual/graphics/fb1/video_mode_str
-   chown system graphics /sys/devices/virtual/graphics/fb1/connected
-   chown system graphics /sys/devices/virtual/graphics/fb1/edid_modes
-   chown system graphics /sys/devices/virtual/graphics/fb1/hdcp
-   chown system graphics /sys/devices/virtual/graphics/fb1/hpd
-   chown system graphics /sys/devices/virtual/graphics/fb1/3d_present
-   chown system graphics /sys/devices/virtual/graphics/fb1/hdcp_present
-   chown system graphics /sys/devices/virtual/graphics/fb1/format_3d
-   chown system graphics /sys/devices/virtual/graphics/fb1/edid_3d_modes
-   chown system graphics /sys/devices/virtual/graphics/fb1/underscan
-   chown system graphics /sys/devices/virtual/graphics/fb1/dvi
-   chown system graphics /sys/devices/virtual/graphics/fb1/pa
-   chown system graphics /sys/devices/virtual/graphics/fb1/cec
-   chown system graphics /sys/devices/virtual/graphics/fb1/cec_logical_addr
-   chown system graphics /sys/devices/virtual/graphics/fb1/cec_wr_frame
-   chown system graphics /sys/devices/virtual/graphics/fb1/product_description
-   chown system graphics /sys/devices/virtual/graphics/fb1/vendor_name
-
-    # Configurate TCP/IP kernel settings
-    exec /system/bin/sh /system/etc/init.netconfig.sh
-
-on boot
-    
-
-    
-    
-
-    exec /system/bin/usbeng
-
-    # Disable C_A_D
-    exec system/bin/ctrlaltdel soft
-
-    # USB Host support
-    mkdir /dev/bus 0711 system system
-    mkdir /dev/bus/usb 0711 system system
-
-    write /sys/class/android_usb/android0/iManufacturer $ro.product.manufacturer
-    write /sys/class/android_usb/android0/iProduct $ro.product.model
-
-    
-
-    setprop ro.wifi.wps_enable true
-
-    write /proc/sys/kernel/sysrq 0
-    write /proc/sys/kernel/watchdog_thresh 5
-
-    exec /system/bin/cal_data_manager
 
 service illumination /system/bin/illumination_service
     class main
@@ -265,58 +308,6 @@ on property:sys.usb.config=rndis,adb
     exec /init.usbmode.sh
     start adbd
     setprop sys.usb.state $sys.usb.config
-
-on fs
-# mount mmc partitions
-    # mount /system, set up links to the modem, and remount r/o
-    wait /dev/block/mmcblk0p12
-    mount ext4 /dev/block/mmcblk0p12 /system rw barrier=1
-    mkdir /system/etc/firmware/misc 0771 system system
-    mount ext4 /dev/block/mmcblk0p12 /system remount ro barrier=1
-
-    # mount other partitions
-    wait /dev/block/mmcblk0p14
-    exec /system/bin/e2fsck -p /dev/block/mmcblk0p14
-    setprop ro.crypto.state unsupported
-    mount ext4 /dev/block/mmcblk0p14 /data nosuid nodev noatime barrier=1 noauto_da_alloc
-
-    mount ext4 /dev/block/mmcblk0p13 /cache nosuid nodev noatime barrier=1
-
-    # FOTA must be started after partitions are mounted
-    # and property service is initialized
-    exec /sbin/fota-ua c
-
-    setprop ro.emmc 1
-
-    # SEMC, TA Daemon
-    class_start trimarea
-    exec /system/bin/wait4tad
-    exec /system/bin/mr
-    exec /sbin/checkabortedflash
-
-on post-fs
-    chmod 0664 /sys/devices/platform/msm_sdcc.1/polling
-    chmod 0664 /sys/devices/platform/msm_sdcc.3/polling
-    chmod 0664 /sys/devices/platform/msm_sdcc.4/polling
-
-    mkdir /data/radio 0770 radio radio
-
-    mkdir /data/idd 0755 idd idd
-    mount ext4 /dev/block/mmcblk0p10 /data/idd nosuid nodev noatime barrier=0
-    chown idd idd /data/idd
-    chmod 0755 /data/idd
-
-    # Camera
-    mkdir /data/camera 0771 root camera
-
-    #Create QMUX deamon socket area
-    mkdir /dev/socket/qmux_radio 0770 radio radio
-    chmod 2770 /dev/socket/qmux_radio
-    mkdir /dev/socket/qmux_audio 0770 media audio
-    chmod 2770 /dev/socket/qmux_audio
-    mkdir /dev/socket/qmux_bluetooth 0770 bluetooth bluetooth
-    chmod 2770 /dev/socket/qmux_bluetooth
-
 
 on early-boot
     # Touch firmware update
@@ -431,8 +422,6 @@ on boot
     chmod 0660 /data/misc/tsce/userfile.txt
     chmod 0660 /data/misc/tsce/userfile2.txt
     chmod 0660 /data/misc/tsce/logfile.txt
-    
-    
 
     insmod /system/lib/modules/bcmdhd.ko nvram_path=/system/etc/wifi/calibration iface_name=wlan0
 
@@ -455,24 +444,20 @@ service cnd /system/bin/cnd
     class main
     socket cnd stream 660 root radio
 
-service rmt_storage /system/bin/rmt_storage
-    user root
-    disabled
-
 service updatemiscta /system/bin/updatemiscta
+    class core
     user root
     disabled
     oneshot
 
+service rmt_storage /system/bin/rmt_storage
+    class main
+    user root
+
 # SEMC, TA rmt service
 service ta_rmt_service /system/bin/ta_rmt_service
+    class main
     user root
-    disabled
-
-on property:ro.emmc=1
-    start updatemiscta
-    start rmt_storage
-    start ta_rmt_service
 
 # Copy calibration data from NV to kernel drivers
 service nvimport /system/bin/nvimport
@@ -517,10 +502,10 @@ service netmgrd /system/bin/netmgrd
 
 # SEMC, TA Daemon
 service tad /system/bin/tad /dev/block/mmcblk0p1 0,16,256
+    class trimarea
     user root
     group root
     socket tad stream 0660 system system
-    class trimarea
 
 service hw_config /system/bin/sh /system/etc/hw_config.sh
     class main
@@ -563,21 +548,11 @@ on property:vold.decrypt=trigger_post_fs_data
     mkdir /data/idd 0755 idd idd
     mount ext4 /dev/block/mmcblk0p10 /data/idd nosuid nodev noatime barrier=0
     chown idd idd /data/idd
+
 service hdmid /system/bin/hdmid
     class main
     user system
     group system inet graphics
-
-on init
-    # create mountpoint
-    mkdir /mnt/sdcard 0000 system system
-
-    # setup the global environment
-    export SECONDARY_STORAGE /mnt/usbdisk
-
-on boot
-    # Enable Wifi EAP SIM
-    setprop ro.wifi.eap_sim_enabled true
 
 on property:sys.radio.shutdown=true
    exec /system/bin/sh /system/etc/init.qcom.efs.sync.sh
