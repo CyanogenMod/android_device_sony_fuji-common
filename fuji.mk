@@ -28,7 +28,7 @@ PRODUCT_COPY_FILES += \
 
 # Common Qualcomm scripts
 PRODUCT_COPY_FILES += \
-    device/htc/fuji-common/config/init.qcom.efs.sync.sh:system/etc/init.qcom.efs.sync.sh
+    device/sony/fuji-common/config/init.qcom.efs.sync.sh:system/etc/init.qcom.efs.sync.sh
 
 # QCOM Display
 PRODUCT_PACKAGES += \
