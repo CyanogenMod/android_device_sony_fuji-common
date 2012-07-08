@@ -422,7 +422,7 @@ on boot
     chmod 0660 /data/misc/tsce/userfile2.txt
     chmod 0660 /data/misc/tsce/logfile.txt
 
-    insmod /system/lib/modules/bcm4330.ko nvram_path=/system/etc/wifi/calibration iface_name=wlan0
+    insmod /system/lib/modules/bcmdhd.ko nvram_path=/system/etc/wifi/calibration iface_name=wlan0
 
 service hciattach /system/bin/brcm_patchram_plus --enable_hci --enable_lpm \
     --use_baudrate_for_download --tosleep 20000 --scopcm 0,4,0,0,0,0,0,0,3,0 \
