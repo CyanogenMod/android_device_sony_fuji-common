@@ -195,11 +195,6 @@ on early-boot
     # Configurate TCP/IP kernel settings
     exec /system/bin/sh /system/etc/init.netconfig.sh
 
-service iddd /system/bin/iddd
-    class main
-    user idd
-    group idd log
-
 # Set the startup flag to boot complete, run on property change
 service setssflagbc /system/bin/startupflag bootcomplete
     user root
@@ -336,16 +331,15 @@ on boot
     chmod 4755 /system/bin/diag_mdlog
 
     # LM35xx/cameralight
-    chown system system /sys/devices/i2c-3/3-0053/torch_enable
-    chown system system /sys/devices/i2c-3/3-0053/torch_current
-    chown system system /sys/devices/i2c-3/3-0053/privacy_enable
-    chown system system /sys/devices/i2c-3/3-0053/privacy_current
-    chown system system /sys/devices/i2c-3/3-0053/flash_enable
-    chown system system /sys/devices/i2c-3/3-0053/flash_duration
-    chown system system /sys/devices/i2c-3/3-0053/flash_synchronization
-    chown system system /sys/devices/i2c-3/3-0053/flash_current
+    chown system camera /sys/devices/i2c-3/3-0053/torch_enable
+    chown system camera /sys/devices/i2c-3/3-0053/torch_current
+    chown system camera /sys/devices/i2c-3/3-0053/privacy_enable
+    chown system camera /sys/devices/i2c-3/3-0053/privacy_current
+    chown system camera /sys/devices/i2c-3/3-0053/flash_enable
+    chown system camera /sys/devices/i2c-3/3-0053/flash_duration
+    chown system camera /sys/devices/i2c-3/3-0053/flash_synchronization
+    chown system camera /sys/devices/i2c-3/3-0053/flash_current
     chown system camera /sys/devices/i2c-3/3-0053/status
-    chmod 0640 /sys/devices/i2c-3/3-0053/status
 
     # Owner for the proximity sensor
     chown system system /sys/devices/i2c-3/3-0054/threshold
@@ -434,10 +428,6 @@ service hciattach /system/bin/brcm_patchram_plus --enable_hci --enable_lpm \
     group bluetooth net_bt_admin
     disabled
     oneshot
-
-service cnd /system/bin/cnd
-    class main
-    socket cnd stream 660 root radio
 
 service updatemiscta /system/bin/updatemiscta
     class core
