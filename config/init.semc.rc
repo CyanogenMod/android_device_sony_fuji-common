@@ -344,7 +344,8 @@ on boot
     chown system system /sys/devices/i2c-3/3-0053/flash_duration
     chown system system /sys/devices/i2c-3/3-0053/flash_synchronization
     chown system system /sys/devices/i2c-3/3-0053/flash_current
-    chown system system /sys/devices/i2c-3/3-0053/status
+    chown system camera /sys/devices/i2c-3/3-0053/status
+    chmod 0640 /sys/devices/i2c-3/3-0053/status
 
     # Owner for the proximity sensor
     chown system system /sys/devices/i2c-3/3-0054/threshold
@@ -374,7 +375,7 @@ on boot
     chmod 0660                /sys/class/rfkill/rfkill0/state
 
     # bluetooth address programming
-    setprop ro.bt.bdaddr_path data/etc/bluetooth_bdaddr
+    setprop ro.bt.bdaddr_path /data/etc/bluetooth_bdaddr
 
     # power-management
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor ondemand

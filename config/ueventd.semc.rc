@@ -16,6 +16,8 @@
 /dev/kgsl-2d0             0666   root       root
 /dev/kgsl-2d1             0666   root       root
 
+/dev/ion                  0664   system     system
+
 /dev/rfkill               0660   wifi       wifi
 
 # these should not be world writable
@@ -60,7 +62,7 @@
 /dev/hsicctl1             0640   radio      radio
 /dev/hsicctl2             0640   radio      radio
 /dev/hsicctl3             0640   radio      radio
-/dev/gemini0              0660   system     system
+/dev/gemini0              0660   system     camera
 /dev/mdm                  0660   system     system
 /dev/ttyHSL1              0660   system     system
 /dev/tty_sdio_00          0660   system     system
@@ -72,6 +74,7 @@
 /dev/msm_vidc_dec_sec     0660  system       audio
 /dev/msm_vidc_enc         0660  system       audio
 #permissions for audio
+/dev/msm_audio_dev_ctrl   0660  system       audio
 /dev/msm_amrnb            0660  system       audio
 /dev/msm_amrwb            0660  system       audio
 /dev/msm_aac              0660  system       audio
@@ -89,10 +92,15 @@
 /dev/msm_a2dp_in          0640  system       audio
 /dev/msm_amrnb_in         0640  system       audio
 
+/dev/cpu_dma_latency      0660  system       system
+
+/dev/rmnet_mux_ctrl       0640  radio        radio
+
 #permissions for sensors
 /dev/msm_dsps             0660  system       system
 ### end from CAF
 
+/dev/oncrpc/*                   0660    root    system
 /dev/oncrpc/30000017:*          0660    radio   radio
 /dev/oncrpc/30000000:*          0660    radio   radio
 /dev/oncrpc/30000016:*          0660    radio   radio
