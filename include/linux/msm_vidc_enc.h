@@ -74,6 +74,7 @@
 #define VEN_EXTRADATA_SLICEINFO 0x100
 #define VEN_FRAME_TYPE_I 1 
 #define VEN_FRAME_TYPE_P 2 
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_FRAME_TYPE_B 3 
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_CODEC_MPEG4 1 
@@ -84,59 +85,65 @@
 #define VEN_PROFILE_MPEG4_ASP 2 
 #define VEN_PROFILE_H264_BASELINE 3 
 #define VEN_PROFILE_H264_MAIN 4 
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_PROFILE_H264_HIGH 5 
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_PROFILE_H263_BASELINE 6 
 #define VEN_LEVEL_MPEG4_0 0x1 
 #define VEN_LEVEL_MPEG4_1 0x2 
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_LEVEL_MPEG4_2 0x3 
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_LEVEL_MPEG4_3 0x4 
 #define VEN_LEVEL_MPEG4_4 0x5 
 #define VEN_LEVEL_MPEG4_5 0x6 
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_LEVEL_MPEG4_3b 0x7 
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_LEVEL_MPEG4_6 0x8 
 #define VEN_LEVEL_H264_1 0x9 
 #define VEN_LEVEL_H264_1b 0xA 
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_LEVEL_H264_1p1 0xB 
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_LEVEL_H264_1p2 0xC 
 #define VEN_LEVEL_H264_1p3 0xD 
 #define VEN_LEVEL_H264_2 0xE 
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_LEVEL_H264_2p1 0xF 
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_LEVEL_H264_2p2 0x10 
 #define VEN_LEVEL_H264_3 0x11 
 #define VEN_LEVEL_H264_3p1 0x12 
-#define VEN_LEVEL_H264_3p2 0x13 
+#define VEN_LEVEL_H264_3p2 0x13
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
-#define VEN_LEVEL_H264_4 0x14 
-#define VEN_LEVEL_H263_10 0x15 
-#define VEN_LEVEL_H263_20 0x16 
-#define VEN_LEVEL_H263_30 0x17 
+#define VEN_LEVEL_H264_4 0x14
+#define VEN_LEVEL_H263_10 0x15
+#define VEN_LEVEL_H263_20 0x16
+#define VEN_LEVEL_H263_30 0x17
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
-#define VEN_LEVEL_H263_40 0x18 
-#define VEN_LEVEL_H263_45 0x19 
-#define VEN_LEVEL_H263_50 0x1A 
-#define VEN_LEVEL_H263_60 0x1B 
+#define VEN_LEVEL_H263_40 0x18
+#define VEN_LEVEL_H263_45 0x19
+#define VEN_LEVEL_H263_50 0x1A
+#define VEN_LEVEL_H263_60 0x1B
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
-#define VEN_LEVEL_H263_70 0x1C 
+#define VEN_LEVEL_H263_70 0x1C
 #define VEN_ENTROPY_MODEL_CAVLC 1
 #define VEN_ENTROPY_MODEL_CABAC 2
 #define VEN_CABAC_MODEL_0 1 
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_CABAC_MODEL_1 2 
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_CABAC_MODEL_2 3 
 #define VEN_DB_DISABLE 1 
 #define VEN_DB_ALL_BLKG_BNDRY 2 
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
-#define VEN_DB_SKIP_SLICE_BNDRY 3 
+#define VEN_DB_SKIP_SLICE_BNDRY 3
 #define VEN_MSLICE_OFF 1
 #define VEN_MSLICE_CNT_MB 2  
 #define VEN_MSLICE_CNT_BYTE 3  
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
-#define VEN_MSLICE_GOB 4  
+#define VEN_MSLICE_GOB 4
 #define VEN_RC_OFF 1
 #define VEN_RC_VBR_VFR 2
 #define VEN_RC_VBR_CFR 3
@@ -148,17 +155,20 @@
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_FLUSH_ALL 3
 #define VEN_INPUTFMT_NV12 1 
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_INPUTFMT_NV21 2 
-#define VEN_INPUTFMT_NV12_16M2KA 3 
+#define VEN_INPUTFMT_NV12_16M2KA 3
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_ROTATION_0 1 
 #define VEN_ROTATION_90 2 
 #define VEN_ROTATION_180 3 
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_ROTATION_270 4 
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_TIMEOUT_INFINITE 0xffffffff
 #define VEN_IR_OFF 1
 #define VEN_IR_CYCLIC 2
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_IR_RANDOM 3
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_IOCTLBASE_NENC 0x800
@@ -179,6 +189,7 @@ struct venc_ioctl_msg{
 #define VEN_IOCTL_SET_INPUT_BUFFER   _IOW(VEN_IOCTLBASE_NENC, 6, struct venc_ioctl_msg)
 #define VEN_IOCTL_CMD_FREE_INPUT_BUFFER   _IOW(VEN_IOCTLBASE_NENC, 7, struct venc_ioctl_msg)
 #define VEN_IOCTL_SET_OUTPUT_BUFFER_REQ   _IOW(VEN_IOCTLBASE_NENC, 8, struct venc_ioctl_msg)
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_IOCTL_GET_OUTPUT_BUFFER_REQ   _IOR(VEN_IOCTLBASE_NENC, 9, struct venc_ioctl_msg)
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_IOCTL_CMD_ALLOC_OUTPUT_BUFFER   _IOW(VEN_IOCTLBASE_NENC, 10, struct venc_ioctl_msg)
@@ -198,21 +209,25 @@ struct venc_ioctl_msg{
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_IOCTL_GET_RECON_BUFFER_SIZE   _IOW(VEN_IOCTLBASE_NENC, 22, struct venc_ioctl_msg)
 #define VEN_IOCTL_SET_BASE_CFG   _IOW(VEN_IOCTLBASE_ENC, 1, struct venc_ioctl_msg)
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_IOCTL_GET_BASE_CFG   _IOR(VEN_IOCTLBASE_ENC, 2, struct venc_ioctl_msg)
 #define VEN_IOCTL_SET_LIVE_MODE   _IOW(VEN_IOCTLBASE_ENC, 3, struct venc_ioctl_msg)
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_IOCTL_GET_LIVE_MODE   _IOR(VEN_IOCTLBASE_ENC, 4, struct venc_ioctl_msg)
 #define VEN_IOCTL_SET_CODEC_PROFILE   _IOW(VEN_IOCTLBASE_ENC, 5, struct venc_ioctl_msg)
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_IOCTL_GET_CODEC_PROFILE   _IOR(VEN_IOCTLBASE_ENC, 6, struct venc_ioctl_msg)
 #define VEN_IOCTL_SET_PROFILE_LEVEL   _IOW(VEN_IOCTLBASE_ENC, 7, struct venc_ioctl_msg)
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_IOCTL_GET_PROFILE_LEVEL   _IOR(VEN_IOCTLBASE_ENC, 8, struct venc_ioctl_msg)
 #define VEN_IOCTL_SET_SHORT_HDR   _IOW(VEN_IOCTLBASE_ENC, 9, struct venc_ioctl_msg)
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_IOCTL_GET_SHORT_HDR   _IOR(VEN_IOCTLBASE_ENC, 10, struct venc_ioctl_msg)
 #define VEN_IOCTL_SET_SESSION_QP   _IOW(VEN_IOCTLBASE_ENC, 11, struct venc_ioctl_msg)
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_IOCTL_GET_SESSION_QP   _IOR(VEN_IOCTLBASE_ENC, 12, struct venc_ioctl_msg)
 #define VEN_IOCTL_SET_INTRA_PERIOD   _IOW(VEN_IOCTLBASE_ENC, 13, struct venc_ioctl_msg)
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_IOCTL_GET_INTRA_PERIOD   _IOR(VEN_IOCTLBASE_ENC, 14, struct venc_ioctl_msg)
 #define VEN_IOCTL_CMD_REQUEST_IFRAME _IO(VEN_IOCTLBASE_ENC, 15)
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
@@ -258,169 +273,182 @@ struct venc_ioctl_msg{
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define VEN_IOCTL_SET_EXTRADATA   _IOW(VEN_IOCTLBASE_ENC, 48, struct venc_ioctl_msg)
 #define VEN_IOCTL_GET_EXTRADATA   _IOR(VEN_IOCTLBASE_ENC, 49, struct venc_ioctl_msg)
+#define VEN_IOCTL_SET_SLICE_DELIVERY_MODE   _IO(VEN_IOCTLBASE_ENC, 50)
 struct venc_switch{
- unsigned char status;
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ unsigned char status;
 };
 struct venc_allocatorproperty{
- unsigned long mincount;
- unsigned long maxcount;
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ unsigned long mincount;
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ unsigned long maxcount;
  unsigned long actualcount;
  unsigned long datasize;
- unsigned long suffixsize;
- unsigned long alignment;
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ unsigned long suffixsize;
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ unsigned long alignment;
  unsigned long bufpoolid;
 };
 struct venc_bufferpayload{
- unsigned char *pbuffer;
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ unsigned char *pbuffer;
  size_t sz;
  int fd;
- unsigned int offset;
- unsigned int maped_size;
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ unsigned int offset;
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ unsigned int maped_size;
  unsigned long filled_len;
 };
 struct venc_buffer{
- unsigned char *ptrbuffer;
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ unsigned char *ptrbuffer;
  unsigned long sz;
  unsigned long len;
- unsigned long offset;
- long long timestamp;
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ unsigned long offset;
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ long long timestamp;
  unsigned long flags;
  void *clientdata;
-};
-struct venc_basecfg{
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+};
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+struct venc_basecfg{
  unsigned long input_width;
  unsigned long input_height;
- unsigned long dvs_width;
- unsigned long dvs_height;
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ unsigned long dvs_width;
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ unsigned long dvs_height;
  unsigned long codectype;
  unsigned long fps_num;
- unsigned long fps_den;
- unsigned long targetbitrate;
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ unsigned long fps_den;
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ unsigned long targetbitrate;
  unsigned long inputformat;
 };
 struct venc_profile{
- unsigned long profile;
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ unsigned long profile;
 };
 struct ven_profilelevel{
- unsigned long level;
-};
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ unsigned long level;
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+};
 struct venc_sessionqp{
  unsigned long iframeqp;
- unsigned long pframqp;
-};
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ unsigned long pframqp;
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+};
 struct venc_qprange{
  unsigned long maxqp;
- unsigned long minqp;
-};
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ unsigned long minqp;
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+};
 struct venc_intraperiod{
  unsigned long num_pframes;
  unsigned long num_bframes;
-};
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+};
 struct venc_seqheader{
  unsigned char *hdrbufptr;
  unsigned long bufsize;
- unsigned long hdrlen;
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ unsigned long hdrlen;
 };
 struct venc_capability{
  unsigned long codec_types;
- unsigned long maxframe_width;
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ unsigned long maxframe_width;
  unsigned long maxframe_height;
  unsigned long maxtarget_bitrate;
  unsigned long maxframe_rate;
- unsigned long input_formats;
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ unsigned long input_formats;
  unsigned char dvs;
 };
 struct venc_entropycfg{
- unsigned longentropysel;
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ unsigned longentropysel;
  unsigned long cabacmodel;
 };
 struct venc_dbcfg{
- unsigned long db_mode;
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ unsigned long db_mode;
  unsigned long slicealpha_offset;
  unsigned long slicebeta_offset;
 };
-struct venc_intrarefresh{
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+struct venc_intrarefresh{
  unsigned long irmode;
  unsigned long mbcount;
 };
-struct venc_multiclicecfg{
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+struct venc_multiclicecfg{
  unsigned long mslice_mode;
  unsigned long mslice_size;
 };
-struct venc_bufferflush{
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+struct venc_bufferflush{
  unsigned long flush_mode;
 };
 struct venc_ratectrlcfg{
- unsigned long rcmode;
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ unsigned long rcmode;
 };
 struct venc_voptimingcfg{
  unsigned long voptime_resolution;
-};
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+};
 struct venc_framerate{
  unsigned long fps_denominator;
  unsigned long fps_numerator;
-};
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+};
 struct venc_targetbitrate{
  unsigned long target_bitrate;
 };
-struct venc_rotation{
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+struct venc_rotation{
  unsigned long rotation;
 };
 struct venc_timeout{
- unsigned long millisec;
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ unsigned long millisec;
 };
 struct venc_headerextension{
  unsigned long header_extension;
-};
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+};
 struct venc_msg{
  unsigned long statuscode;
  unsigned long msgcode;
- struct venc_buffer buf;
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ struct venc_buffer buf;
  unsigned long msgdata_size;
 };
 struct venc_recon_addr{
- unsigned char *pbuffer;
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ unsigned char *pbuffer;
  unsigned long buffer_size;
  unsigned long pmem_fd;
  unsigned long offset;
-};
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+};
 struct venc_recon_buff_size{
  int width;
  int height;
- int size;
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ int size;
  int alignment;
 };
 #endif
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+
