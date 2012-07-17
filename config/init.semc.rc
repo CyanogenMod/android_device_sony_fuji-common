@@ -242,7 +242,7 @@ service secchan /system/bin/secchand
 
 service illumination /system/bin/illumination_service
     class main
-    user root
+    user system
     group system
 
 service time_daemon /system/bin/time_daemon
