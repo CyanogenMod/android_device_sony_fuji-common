@@ -68,6 +68,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     gps.semc
 
+# Light
+PRODUCT_PACKAGES += \
+    lights.semc
+
 # Misc
 PRODUCT_PACKAGES += \
     com.android.future.usb.accessory
