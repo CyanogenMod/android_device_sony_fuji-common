@@ -66,11 +66,11 @@ PRODUCT_PACKAGES += \
 
 # GPS
 PRODUCT_PACKAGES += \
-    gps.semc
+    gps.msm8660
 
 # Light
 PRODUCT_PACKAGES += \
-    lights.semc
+    lights.msm8660
 
 # Misc
 PRODUCT_PACKAGES += \
