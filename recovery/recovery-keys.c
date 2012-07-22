@@ -26,7 +26,6 @@ int device_toggle_display(volatile char* key_pressed, int key_code) {
     return key_pressed[KEY_POWER] && key_code == KEY_VOLUMEUP;
 }
 
-
 int device_handle_key(int key_code, int visible) {
     if (visible) {
         switch (key_code) {
@@ -45,7 +44,7 @@ int device_handle_key(int key_code, int visible) {
                 if (ui_get_showing_back_button()) {
                     return SELECT_ITEM;
                 }
-                if (!get_allow_toggle_display() && ui_menu_level > 0) {
+                if (!get_allow_toggle_display() && !ui_root_menu) {
                     return GO_BACK;
                 }
                 break;
@@ -63,16 +62,15 @@ int device_handle_key(int key_code, int visible) {
                 if (ui_get_showing_back_button()) {
                     return SELECT_ITEM;
                 }
-                if (!get_allow_toggle_display() && ui_menu_level > 0) {
+                if (!get_allow_toggle_display() && !ui_root_menu) {
                     return GO_BACK;
                 }
             case KEY_BACK:
-              if (ui_menu_level > 0) {
-          return GO_BACK;
-        }
+                if (!ui_root_menu) {
+                    return GO_BACK;
+                }
         }
     }
 
     return NO_ACTION;
 }
-
