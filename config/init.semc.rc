@@ -1,10 +1,5 @@
 import init.semc.usb.rc
 
-on early-fs
-    # Do some post work for dump before used
-    # by the system.
-    # exec /sbin/grabramdump
-
 on fs
 # mount mmc partitions
     # mount /system, set up links to the modem, and remount r/o
@@ -20,10 +15,6 @@ on fs
     mount ext4 /dev/block/mmcblk0p14 /data nosuid nodev noatime barrier=1 noauto_da_alloc
 
     mount ext4 /dev/block/mmcblk0p13 /cache nosuid nodev noatime barrier=1
-
-    # FOTA must be started after partitions are mounted
-    # and property service is initialized
-    exec /sbin/fota-ua c
 
     setprop ro.emmc 1
 
@@ -64,88 +55,13 @@ on post-fs
     mkdir /dev/socket/qmux_bluetooth 0770 bluetooth bluetooth
     chmod 2770 /dev/socket/qmux_bluetooth
 
+    # Run pre_hw_config.sh before entering Charge only mode.
+    exec /system/bin/sh /system/etc/pre_hw_config.sh
+
 on early-boot
     # Start the offline charging (This blocks booting further in some cases)
     exec sbin/bootrec
 
-    # Make sure the crashsms/crashes are writable by crashmonitor
-
-on boot
-# Optimized browser caching and connection handling
-    setprop net.http.idle_cache.size  40
-    setprop net.http.threads  10
-    setprop net.webkit.cache.size  12582912
-    setprop net.nw.cache.prioadvstep  86400000
-    setprop net.nw.cache.weightadvstep  3600000
-    setprop net.nw.cache.orderby  weight
-    setprop net.http.idle_cache.shutdown  true
-    setprop net.webkit.cache.mindeadsize  4194304
-    setprop net.webkit.cache.maxdeadsize  4194304
-
-    exec /system/bin/usbeng
-
-    # Disable C_A_D
-    exec system/bin/ctrlaltdel soft
-
-    # USB Host support
-    mkdir /dev/bus 0711 system system
-    mkdir /dev/bus/usb 0711 system system
-
-    write /sys/class/android_usb/android0/iManufacturer $ro.product.manufacturer
-    write /sys/class/android_usb/android0/iProduct $ro.product.model
-
-    setprop ro.wifi.wps_enable true
-
-    write /proc/sys/kernel/sysrq 0
-    write /proc/sys/kernel/watchdog_thresh 5
-
-    exec /system/bin/cal_data_manager
-
-    # Enable Wifi EAP SIM
-    setprop ro.wifi.eap_sim_enabled true
-
-on init
-    write /sys/class/android_usb/android0/iSerial $ro.serialno
-    write /sys/class/android_usb/android0/f_rndis/manufacturer $ro.product.manufacturer
-    write /sys/class/android_usb/android0/f_rndis/vendorID 0fce
-    write /sys/class/android_usb/android0/f_rndis/wceis 1
-
-    # setup the global environment
-    export EXTERNAL_STORAGE /mnt/sdcard
-    export EXTERNAL_STORAGE_USB /mnt/usbdisk
-
-    # create mountpoint
-    mkdir /mnt/usbdisk 0000 system system
-
-    # Create symlink
-    symlink /mnt/sdcard /sdcard
-    symlink /mnt/usbdisk /usbdisk
-
-    # create mountpoint
-    mkdir /mnt/sdcard 0000 system system
-
-    # setup the global environment
-    export SECONDARY_STORAGE /mnt/usbdisk
-
-on post-fs
-    # Run pre_hw_config.sh before entering Charge only mode.
-    exec /system/bin/sh /system/etc/pre_hw_config.sh
-
-on post-fs-data
-    # Clear dalvik cache
-    exec /init.clrdex.sh
-
-    chown system system /sys/devices/platform/msm_hsusb/gadget/lun1/file
-    chmod 0660 /sys/devices/platform/msm_hsusb/gadget/lun1/file
-    write /sys/class/android_usb/f_mass_storage/inquiry_string "SONY    Mass Storage    0100"
-    write /sys/class/android_usb/f_cdrom/cdrom_inquiry_string "SONY    CD-ROM          0100"
-    write /sys/class/android_usb/f_mass_storage/serial_number $ro.serialno
-    write /sys/class/android_usb/f_mass_storage/eui64_id 000AD90000000000
-    write /sys/devices/platform/msm_hsusb/gadget/lun0/nofua 1
-    write /sys/devices/platform/msm_hsusb/gadget/lun1/nofua 1
-    setprop vold.post_fs_data_done 1
-
-on early-boot
     # set RLIMIT_MEMLOCK to 64MB
     setrlimit 8 67108864 67108864
 
@@ -186,14 +102,182 @@ on early-boot
     chown system graphics /sys/devices/virtual/graphics/fb1/underscan
     chown system graphics /sys/devices/virtual/graphics/fb1/dvi
     chown system graphics /sys/devices/virtual/graphics/fb1/pa
+
     chown system graphics /sys/devices/virtual/graphics/fb1/cec
     chown system graphics /sys/devices/virtual/graphics/fb1/cec_logical_addr
     chown system graphics /sys/devices/virtual/graphics/fb1/cec_wr_frame
     chown system graphics /sys/devices/virtual/graphics/fb1/product_description
     chown system graphics /sys/devices/virtual/graphics/fb1/vendor_name
 
-    # Configurate TCP/IP kernel settings
-    exec /system/bin/sh /system/etc/init.netconfig.sh
+    # Touch firmware update
+    exec /system/bin/sh /system/etc/clearpad_fwloader.sh
+
+    # Permissions for AKM897x sensor
+    chown system system /data/misc/akm_set.txt
+    chown system system /sys/class/compass/akm8972/interval
+    chown system system /sys/class/compass/akm8972/single
+    chown system system /sys/class/compass/akm8972/registers
+    chown system system /sys/class/compass/akm8975/interval
+    chown system system /sys/class/compass/akm8975/single
+    chown system system /sys/class/compass/akm8975/registers
+
+on boot
+# Optimized browser caching and connection handling
+    setprop net.http.idle_cache.size 40
+    setprop net.http.threads 10
+    setprop net.webkit.cache.size 12582912
+    setprop net.nw.cache.prioadvstep 86400000
+    setprop net.nw.cache.weightadvstep 3600000
+    setprop net.nw.cache.orderby weight
+    setprop net.http.idle_cache.shutdown true
+    setprop net.webkit.cache.mindeadsize 4194304
+    setprop net.webkit.cache.maxdeadsize 4194304
+
+    exec /system/bin/usbeng
+
+    # Disable C_A_D
+    exec system/bin/ctrlaltdel soft
+
+    # USB Host support
+    mkdir /dev/bus 0711 system system
+    mkdir /dev/bus/usb 0711 system system
+
+    write /sys/class/android_usb/android0/iManufacturer $ro.product.manufacturer
+    write /sys/class/android_usb/android0/iProduct $ro.product.model
+
+    setprop ro.wifi.wps_enable true
+
+    write /proc/sys/kernel/sysrq 0
+    write /proc/sys/kernel/watchdog_thresh 5
+
+    exec /system/bin/cal_data_manager
+
+    # Enable Wifi EAP SIM
+    setprop ro.wifi.eap_sim_enabled true
+
+    chown system system /sys/module/sco/parameters/disable_esco
+
+    chmod 0660 /sys/devices/platform/msm_serial_hs.0/clock
+
+    mkdir /data/misc/wifi 0770 wifi wifi
+    mkdir /data/misc/wifi/sockets 0771 wifi wifi
+    chmod 0660 /data/misc/wifi/wpa_supplicant.conf
+    mkdir /data/misc/dhcp 0770 dhcp system
+
+    #Set SUID bit for diag_mdlog
+    chmod 4755 /system/bin/diag_mdlog
+
+    # LM35xx/cameralight
+    chown system camera /sys/devices/i2c-3/3-0053/torch_enable
+    chown system camera /sys/devices/i2c-3/3-0053/torch_current
+    chown system camera /sys/devices/i2c-3/3-0053/privacy_enable
+    chown system camera /sys/devices/i2c-3/3-0053/privacy_current
+    chown system camera /sys/devices/i2c-3/3-0053/flash_enable
+    chown system camera /sys/devices/i2c-3/3-0053/flash_duration
+    chown system camera /sys/devices/i2c-3/3-0053/flash_synchronization
+    chown system camera /sys/devices/i2c-3/3-0053/flash_current
+    chown system camera /sys/devices/i2c-3/3-0053/status
+
+    # Owner for the proximity sensor
+    chown system system /sys/devices/i2c-3/3-0054/threshold
+    chown system system /sys/devices/i2c-3/3-0054/nburst
+
+    # Default tcp buffersizes for hsdpa
+    setprop net.tcp.buffersize.hsdpa 4094,87380,1220608,4096,16384,1220608
+    setprop net.tcp.buffersize.hspa 4094,87380,1220608,4096,16384,1220608
+
+    # Permissions for Liblights.
+    chown system system /sys/class/leds/green/brightness
+    chown system system /sys/class/leds/green/trigger
+    chown system system /sys/class/leds/red/brightness
+    chown system system /sys/class/leds/red/trigger
+    chown system system /sys/class/leds/blue/brightness
+    chown system system /sys/class/leds/blue/trigger
+    chown system system /sys/class/leds/button-backlight/brightness
+    chown system system /sys/class/leds/button-backlight/trigger
+    chown system system /sys/class/leds/lcd-backlight/brightness
+    chown system system /sys/class/leds/lcd-backlight/als/curve
+    chown system system /sys/class/leds/lcd-backlight/als/enable
+    chown system system /sys/class/leds/keyboard-backlight/brightness
+    chown system system /sys/devices/i2c-3/3-0040/adc_als_value
+
+    # bluetooth power up/down interface
+    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
+    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
+    chmod 0660                /sys/class/rfkill/rfkill0/state
+
+    # bluetooth address programming
+    setprop ro.bt.bdaddr_path /data/etc/bluetooth_bdaddr
+
+    # power-management
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor ondemand
+    write /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor ondemand
+    write /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate 50000
+    write /sys/devices/system/cpu/cpufreq/ondemand/up_threshold 90
+    write /sys/devices/system/cpu/cpufreq/ondemand/io_is_busy 1
+    write /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor 4
+    write /sys/devices/system/cpu/cpufreq/ondemand/down_differential 10
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 384000
+    write /sys/devices/system/cpu/cpu1/cpufreq/scaling_min_freq 384000
+
+    write /sys/module/rpm_resources/enable_low_power/L2_cache 1
+    write /sys/module/rpm_resources/enable_low_power/pxo 1
+    write /sys/module/rpm_resources/enable_low_power/vdd_dig 2
+    write /sys/module/rpm_resources/enable_low_power/vdd_mem 2
+    write /sys/module/rpm_resources/enable_low_power/rpm_cpu 1
+
+    write /sys/module/pm_8x60/modes/cpu0/power_collapse/suspend_enabled 1
+    write /sys/module/pm_8x60/modes/cpu1/power_collapse/suspend_enabled 1
+    write /sys/module/pm_8x60/modes/cpu0/standalone_power_collapse/suspend_enabled 1
+    write /sys/module/pm_8x60/modes/cpu1/standalone_power_collapse/suspend_enabled 1
+    write /sys/module/pm_8x60/modes/cpu0/power_collapse/idle_enabled 1
+    write /sys/module/pm_8x60/modes/cpu1/power_collapse/idle_enabled 1
+    write /sys/module/pm_8x60/modes/cpu0/standalone_power_collapse/idle_enabled 1
+    write /sys/module/pm_8x60/modes/cpu1/standalone_power_collapse/idle_enabled 1
+
+    chown root.system /sys/devices/system/cpu/mfreq
+    chmod 220 /sys/devices/system/cpu/mfreq
+    chown root.system /sys/devices/system/cpu/cpu1/online
+    chmod 664 /sys/devices/system/cpu/cpu1/online
+
+    insmod /system/lib/modules/bcmdhd.ko nvram_path=/system/etc/wifi/calibration iface_name=wlan0
+
+on init
+    write /sys/class/android_usb/android0/iSerial $ro.serialno
+    write /sys/class/android_usb/android0/f_rndis/manufacturer $ro.product.manufacturer
+    write /sys/class/android_usb/android0/f_rndis/vendorID 0fce
+    write /sys/class/android_usb/android0/f_rndis/wceis 1
+
+    # setup the global environment
+    export EXTERNAL_STORAGE /mnt/sdcard
+    export EXTERNAL_STORAGE_USB /mnt/usbdisk
+
+    # create mountpoint
+    mkdir /mnt/usbdisk 0000 system system
+
+    # Create symlink
+    symlink /mnt/sdcard /sdcard
+    symlink /mnt/usbdisk /usbdisk
+
+    # create mountpoint
+    mkdir /mnt/sdcard 0000 system system
+
+    # setup the global environment
+    export SECONDARY_STORAGE /mnt/usbdisk
+
+on post-fs-data
+    # Clear dalvik cache
+    exec /init.clrdex.sh
+
+    chown system system /sys/devices/platform/msm_hsusb/gadget/lun1/file
+    chmod 0660 /sys/devices/platform/msm_hsusb/gadget/lun1/file
+    write /sys/class/android_usb/f_mass_storage/inquiry_string "SONY    Mass Storage    0100"
+    write /sys/class/android_usb/f_cdrom/cdrom_inquiry_string "SONY    CD-ROM          0100"
+    write /sys/class/android_usb/f_mass_storage/serial_number $ro.serialno
+    write /sys/class/android_usb/f_mass_storage/eui64_id 000AD90000000000
+    write /sys/devices/platform/msm_hsusb/gadget/lun0/nofua 1
+    write /sys/devices/platform/msm_hsusb/gadget/lun1/nofua 1
+    setprop vold.post_fs_data_done 1
 
 # Set the startup flag to boot complete, run on property change
 service setssflagbc /system/bin/startupflag bootcomplete
@@ -208,15 +292,9 @@ service semc-atfwd-d /system/bin/semc-atfwd-d
     disabled
     class main
 
-service fota-snoop /system/bin/fota-snoop
-    group cache
-    oneshot
-    disabled
-
 on property:dev.bootcomplete=1
     start setssflagbc
     start semc-atfwd-d
-    start fota-snoop
     # Ramdumper post processing
     exec /sbin/grabramdump
 
@@ -304,122 +382,6 @@ on property:sys.usb.config=rndis,adb
     start adbd
     setprop sys.usb.state $sys.usb.config
 
-on early-boot
-    # Touch firmware update
-    exec /system/bin/sh /system/etc/clearpad_fwloader.sh
-
-    # Permissions for AKM897x sensor
-    chown system system /data/misc/akm_set.txt
-    chown system system /sys/class/compass/akm8972/interval
-    chown system system /sys/class/compass/akm8972/single
-    chown system system /sys/class/compass/akm8972/registers
-    chown system system /sys/class/compass/akm8975/interval
-    chown system system /sys/class/compass/akm8975/single
-    chown system system /sys/class/compass/akm8975/registers
-
-on boot
-    chown system system /sys/module/sco/parameters/disable_esco
-
-    chmod 0660 /sys/devices/platform/msm_serial_hs.0/clock
-
-    mkdir /data/misc/wifi 0770 wifi wifi
-    mkdir /data/misc/wifi/sockets 0771 wifi wifi
-    chmod 0660 /data/misc/wifi/wpa_supplicant.conf
-    mkdir /data/misc/dhcp 0770 dhcp system
-
-    #Set SUID bit for diag_mdlog
-    chmod 4755 /system/bin/diag_mdlog
-
-    # LM35xx/cameralight
-    chown system camera /sys/devices/i2c-3/3-0053/torch_enable
-    chown system camera /sys/devices/i2c-3/3-0053/torch_current
-    chown system camera /sys/devices/i2c-3/3-0053/privacy_enable
-    chown system camera /sys/devices/i2c-3/3-0053/privacy_current
-    chown system camera /sys/devices/i2c-3/3-0053/flash_enable
-    chown system camera /sys/devices/i2c-3/3-0053/flash_duration
-    chown system camera /sys/devices/i2c-3/3-0053/flash_synchronization
-    chown system camera /sys/devices/i2c-3/3-0053/flash_current
-    chown system camera /sys/devices/i2c-3/3-0053/status
-
-    # Owner for the proximity sensor
-    chown system system /sys/devices/i2c-3/3-0054/threshold
-    chown system system /sys/devices/i2c-3/3-0054/nburst
-
-    # Default tcp buffersizes for hsdpa
-    setprop net.tcp.buffersize.hsdpa 4094,87380,1220608,4096,16384,1220608
-    setprop net.tcp.buffersize.hspa 4094,87380,1220608,4096,16384,1220608
-
-    # Permissions for Liblights.
-    chown system system /sys/class/leds/green/brightness
-    chown system system /sys/class/leds/green/trigger
-    chown system system /sys/class/leds/red/brightness
-    chown system system /sys/class/leds/red/trigger
-    chown system system /sys/class/leds/blue/brightness
-    chown system system /sys/class/leds/blue/trigger
-    chown system system /sys/class/leds/button-backlight/brightness
-    chown system system /sys/class/leds/button-backlight/trigger
-    chown system system /sys/class/leds/lcd-backlight/brightness
-    chown system system /sys/class/leds/lcd-backlight/als/curve
-    chown system system /sys/class/leds/lcd-backlight/als/enable
-    chown system system /sys/class/leds/keyboard-backlight/brightness
-    chown system system /sys/devices/i2c-3/3-0040/adc_als_value
-
-    # bluetooth power up/down interface
-    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
-    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
-    chmod 0660                /sys/class/rfkill/rfkill0/state
-
-    # bluetooth address programming
-    setprop ro.bt.bdaddr_path /data/etc/bluetooth_bdaddr
-
-    # power-management
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor ondemand
-    write /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor ondemand
-    write /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate 50000
-    write /sys/devices/system/cpu/cpufreq/ondemand/up_threshold 90
-    write /sys/devices/system/cpu/cpufreq/ondemand/io_is_busy 1
-    write /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor 4
-    write /sys/devices/system/cpu/cpufreq/ondemand/down_differential 10
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 384000
-    write /sys/devices/system/cpu/cpu1/cpufreq/scaling_min_freq 384000
-
-    write /sys/module/rpm_resources/enable_low_power/L2_cache 1
-    write /sys/module/rpm_resources/enable_low_power/pxo 1
-    write /sys/module/rpm_resources/enable_low_power/vdd_dig 2
-    write /sys/module/rpm_resources/enable_low_power/vdd_mem 2
-    write /sys/module/rpm_resources/enable_low_power/rpm_cpu 1
-
-    write /sys/module/pm_8x60/modes/cpu0/power_collapse/suspend_enabled 1
-    write /sys/module/pm_8x60/modes/cpu1/power_collapse/suspend_enabled 1
-    write /sys/module/pm_8x60/modes/cpu0/standalone_power_collapse/suspend_enabled 1
-    write /sys/module/pm_8x60/modes/cpu1/standalone_power_collapse/suspend_enabled 1
-    write /sys/module/pm_8x60/modes/cpu0/power_collapse/idle_enabled 1
-    write /sys/module/pm_8x60/modes/cpu1/power_collapse/idle_enabled 1
-    write /sys/module/pm_8x60/modes/cpu0/standalone_power_collapse/idle_enabled 1
-    write /sys/module/pm_8x60/modes/cpu1/standalone_power_collapse/idle_enabled 1
-
-    chown root.system /sys/devices/system/cpu/mfreq
-    chmod 220 /sys/devices/system/cpu/mfreq
-    chown root.system /sys/devices/system/cpu/cpu1/online
-    chmod 664 /sys/devices/system/cpu/cpu1/online
-
-    # Create the directories and files expected by the lcatp service
-    # only found in eng builds.
-    # Preferably the ONLY_IN_VARIANT macro should be used but
-    # seems like the build system does not parse this file properly.
-    mkdir /data/misc/tsce 0770 system system
-    write /data/misc/tsce/userfile.txt 0
-    write /data/misc/tsce/userfile2.txt 0
-    write /data/misc/tsce/logfile.txt 0
-    chown system system /data/misc/tsce/userfile.txt
-    chown system system /data/misc/tsce/userfile2.txt
-    chown system system /data/misc/tsce/logfile.txt
-    chmod 0660 /data/misc/tsce/userfile.txt
-    chmod 0660 /data/misc/tsce/userfile2.txt
-    chmod 0660 /data/misc/tsce/logfile.txt
-
-    insmod /system/lib/modules/bcmdhd.ko nvram_path=/system/etc/wifi/calibration iface_name=wlan0
-
 service hciattach /system/bin/brcm_patchram_plus --enable_hci --enable_lpm \
     --use_baudrate_for_download --tosleep 20000 --scopcm 0,4,0,0,0,0,0,0,3,0 \
     --no2bytes --baudrate 3000000 --patchram /system/etc/firmware/BCM4330.hcd \
@@ -505,13 +467,6 @@ service tad /system/bin/tad /dev/block/mmcblk0p1 0,16,256
 service hw_config /system/bin/sh /system/etc/hw_config.sh
     class main
     user root
-    oneshot
-
-# Local Connectivity service only present in engineer builds
-# Preferably the ONLY_IN_VARIANT macro should be used but
-# seems like the build system does not parse this file properly.
-service lcatp /system/bin/lcatp
-    disabled
     oneshot
 
 on property:ro.use_data_netmgrd=false
