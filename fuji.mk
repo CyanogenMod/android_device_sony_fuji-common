@@ -72,6 +72,13 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     com.android.future.usb.accessory
 
+# NFC
+PRODUCT_PACKAGES += \
+    libnfc \
+    libnfc_jni \
+    Nfc \
+    Tag
+
 # Live Wallpapers
 PRODUCT_PACKAGES += \
     LiveWallpapers \
