@@ -42,6 +42,15 @@ PRODUCT_PACKAGES += \
     libQcomUI \
     libtilerenderer
 
+# NFC Support
+PRODUCT_PACKAGES += \
+    libnfc \
+    libnfc_jni \
+    Nfc \
+    Tag \
+    com.android.nfc_extras
+
+
 # Audio
 PRODUCT_PACKAGES += \
     audio.a2dp.default \
