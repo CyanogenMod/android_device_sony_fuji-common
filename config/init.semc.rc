@@ -3,18 +3,12 @@ import init.semc.usb.rc
 on fs
 # mount mmc partitions
     # mount /system, set up links to the modem, and remount r/o
-    wait /dev/block/mmcblk0p12
-    mount ext4 /dev/block/mmcblk0p12 /system rw barrier=1
+    mount ext4 /dev/block/mmcblk0p12 /system wait rw data=ordered noauto_da_alloc
     mkdir /system/etc/firmware/misc 0771 system system
-    mount ext4 /dev/block/mmcblk0p12 /system remount ro barrier=1
-
-    # mount other partitions
-    wait /dev/block/mmcblk0p14
-    exec /system/bin/e2fsck -p /dev/block/mmcblk0p14
+    mount ext4 /dev/block/mmcblk0p12 /system wait ro data=ordered noauto_da_alloc
     setprop ro.crypto.state unsupported
-    mount ext4 /dev/block/mmcblk0p14 /data nosuid nodev noatime barrier=1 noauto_da_alloc
-
-    mount ext4 /dev/block/mmcblk0p13 /cache nosuid nodev noatime barrier=1
+    mount ext4 /dev/block/mmcblk0p14 /data wait noatime nosuid nodev data=ordered noauto_da_alloc
+    mount ext4 /dev/block/mmcblk0p13 /cache wait noatime nosuid nodev data=ordered noauto_da_alloc
 
     setprop ro.emmc 1
 
@@ -40,7 +34,7 @@ on post-fs
     mkdir /data/radio 0770 radio radio
 
     mkdir /data/idd 0755 idd idd
-    mount ext4 /dev/block/mmcblk0p10 /data/idd nosuid nodev noatime barrier=0
+    mount ext4 /dev/block/mmcblk0p10 /data/idd wait nosuid nodev noatime barrier=0
     chown idd idd /data/idd
     chmod 0755 /data/idd
 
@@ -498,7 +492,7 @@ on property:ro.nvcust=1
 
 on property:vold.decrypt=trigger_post_fs_data
     mkdir /data/idd 0755 idd idd
-    mount ext4 /dev/block/mmcblk0p10 /data/idd nosuid nodev noatime barrier=0
+    mount ext4 /dev/block/mmcblk0p10 /data/idd wait nosuid nodev noatime barrier=0
     chown idd idd /data/idd
 
 service hdmid /system/bin/hdmid
