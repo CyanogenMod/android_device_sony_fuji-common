@@ -18,8 +18,6 @@ on fs
     # SEMC, TA Daemon
     class_start trimarea
     exec /system/bin/wait4tad
-    exec /system/bin/mr
-    exec /sbin/checkabortedflash
 
 on post-fs
     mkdir /system/etc/firmware/misc 0771 system system
@@ -134,11 +132,6 @@ on boot
     setprop net.http.idle_cache.shutdown  true
     setprop net.webkit.cache.mindeadsize  4194304
     setprop net.webkit.cache.maxdeadsize  4194304
-
-    exec /system/bin/usbeng
-
-    # Disable C_A_D
-    exec system/bin/ctrlaltdel soft
 
     # USB Host support
     mkdir /dev/bus 0711 system system
@@ -317,17 +310,6 @@ service suntrold /system/bin/suntrold
     group system
     oneshot
 
-service klogrouterd /system/bin/klogrouter logcat
-    class main
-    oneshot
-    disabled
-
-on property:persist.sys.kernel.log=logcat
-    start klogrouterd
-
-on property:persist.sys.kernel.log=default
-    stop klogrouterd
-
 # Fast Dormancy
 service fast-dormancy /system/bin/fast-dormancy
     class main
@@ -490,7 +472,7 @@ service netmgrd /system/bin/netmgrd
 
 # SEMC, TA Daemon
 service tad /system/bin/tad /dev/block/mmcblk0p1 0,16,256
-    class core
+    class trimarea
     user root
     group root
     socket tad stream 0660 system system
