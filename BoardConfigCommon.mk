@@ -93,6 +93,7 @@ DYNAMIC_SHARED_LIBV8SO := true
 
 # Custom boot
 TARGET_RECOVERY_PIXEL_FORMAT := "BGRX_8888"
+TARGET_RECOVERY_PRE_COMMAND := "touch /cache/recovery/boot;sync;"
 BOARD_CUSTOM_BOOTIMG_MK := device/sony/fuji-common/custombootimg.mk
 TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT := device/sony/fuji-common/releasetools/semc_ota_from_target_files
 BOARD_CUSTOM_GRAPHICS := ../../../device/sony/fuji-common/recovery/recovery-gfx.c
