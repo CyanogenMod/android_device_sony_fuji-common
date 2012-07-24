@@ -46,10 +46,6 @@ WIFI_DRIVER_FW_PATH_AP           := "/vendor/firmware/fw_bcmdhd_apsta.bin"
 WIFI_DRIVER_FW_PATH_P2P          := "/vendor/firmware/fw_bcmdhd_p2p.bin"
 WIFI_DRIVER_FW_PATH_PARAM        := "/sys/module/bcmdhd/parameters/firmware_path"
 
-# Audio
-COMMON_GLOBAL_CFLAGS += -DWITH_QCOM_LPA
-TARGET_USES_QCOM_LPA := true
-
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_BCM := true
@@ -110,3 +106,4 @@ BOARD_USE_SKIA_LCDTEXT := true
 
 BOARD_HAVE_SONY_AUDIO := true
 BOARD_HAVE_BACK_MIC_CAMCORDER := true
+QCOM_VOIP_ENABLED := true
