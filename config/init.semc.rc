@@ -15,8 +15,6 @@ on fs
     # SEMC, TA Daemon
     class_start trimarea
     exec /system/bin/wait4tad
-    exec /system/bin/mr
-    exec /sbin/checkabortedflash
 
 on post-fs
     mkdir /data/tombstones 0755 system system
@@ -127,11 +125,6 @@ on boot
     setprop net.webkit.cache.mindeadsize 4194304
     setprop net.webkit.cache.maxdeadsize 4194304
 
-    exec /system/bin/usbeng
-
-    # Disable C_A_D
-    exec system/bin/ctrlaltdel soft
-
     # USB Host support
     mkdir /dev/bus 0711 system system
     mkdir /dev/bus/usb 0711 system system
@@ -157,9 +150,6 @@ on boot
     mkdir /data/misc/wifi/sockets 0771 wifi wifi
     chmod 0660 /data/misc/wifi/wpa_supplicant.conf
     mkdir /data/misc/dhcp 0770 dhcp system
-
-    #Set SUID bit for diag_mdlog
-    chmod 4755 /system/bin/diag_mdlog
 
     # LM35xx/cameralight
     chown system camera /sys/devices/i2c-3/3-0053/torch_enable
@@ -260,9 +250,6 @@ on init
     export SECONDARY_STORAGE /mnt/usbdisk
 
 on post-fs-data
-    # Clear dalvik cache
-    exec /init.clrdex.sh
-
     chown system system /sys/devices/platform/msm_hsusb/gadget/lun1/file
     chmod 0660 /sys/devices/platform/msm_hsusb/gadget/lun1/file
     write /sys/class/android_usb/f_mass_storage/inquiry_string "SONY    Mass Storage    0100"
@@ -298,16 +285,6 @@ service suntrold /system/bin/suntrold
     user system
     group system
     oneshot
-
-service klogrouterd /system/bin/klogrouter logcat
-    oneshot
-    disabled
-
-on property:persist.sys.kernel.log=logcat
-    start klogrouterd
-
-on property:persist.sys.kernel.log=default
-    stop klogrouterd
 
 # Fast Dormancy
 service fast-dormancy /system/bin/fast-dormancy
