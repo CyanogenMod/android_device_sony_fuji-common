@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-#define LOG_TAG "lights.semc"
+#define LOG_TAG "lights.sony"
 
 #include <cutils/log.h>
 #include <stdint.h>
