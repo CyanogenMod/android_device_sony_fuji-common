@@ -155,19 +155,31 @@ static int set_light_buttons (struct light_device_t *dev, struct light_state_t c
 static void set_shared_light_locked (struct light_device_t *dev, struct light_state_t *state) {
 	int r, g, b;
 	int err = 0;
+       int delayOn,delayOff;
 
 	r = (state->color >> 16) & 0xFF;
 	g = (state->color >> 8) & 0xFF;
 	b = (state->color) & 0xFF;
+	
+	delayOn = state->flashOnMS;
+	delayOff = state->flashOffMS;
 
 	if (state->flashMode != LIGHT_FLASH_NONE) {
 		err = write_string (RED_LED_FILE_TRIGGER, "timer");
 		err = write_string (GREEN_LED_FILE_TRIGGER, "timer");
 		err = write_string (BLUE_LED_FILE_TRIGGER, "timer");
+		
+		err = write_int (RED_LED_FILE_DELAYON, delayOn);
+		err = write_int (GREEN_LED_FILE_DELAYON, delayOn);
+		err = write_int (BLUE_LED_FILE_DELAYON, delayOn);
+		
+		err = write_int (RED_LED_FILE_DELAYOFF, delayOff);
+		err = write_int (GREEN_LED_FILE_DELAYOFF, delayOff);
+		err = write_int (BLUE_LED_FILE_DELAYOFF, delayOff);
 	} else {
-		err = write_string (RED_LED_FILE_TRIGGER, "none");
-		err = write_string (GREEN_LED_FILE_TRIGGER, "none");
-		err = write_string (BLUE_LED_FILE_TRIGGER, "none");
+		err = write_string (RED_LED_FILE_TRIGGER, "[none]");
+		err = write_string (GREEN_LED_FILE_TRIGGER, "[none]");
+		err = write_string (BLUE_LED_FILE_TRIGGER, "[none]");
 	}
 
 	err = write_int (RED_LED_FILE, r);
@@ -257,7 +269,7 @@ struct hw_module_t HAL_MODULE_INFO_SYM = {
 	.version_major = 1,
 	.version_minor = 0,
 	.id = LIGHTS_HARDWARE_MODULE_ID,
-	.name = "SEMC lights module",
-	.author = "Diogo Ferreira <defer@cyanogenmod.com>",
+	.name = "Sony lights module",
+	.author = "Diogo Ferreira <defer@cyanogenmod.com>, Andreas Makris <Andreas.Makris@gmail.com>",
 	.methods = &lights_module_methods,
 };
