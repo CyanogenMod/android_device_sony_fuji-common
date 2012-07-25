@@ -160,8 +160,8 @@ static void set_shared_light_locked (struct light_device_t *dev, struct light_st
 	r = (state->color >> 16) & 0xFF;
 	g = (state->color >> 8) & 0xFF;
 	b = (state->color) & 0xFF;
-	
-	delayOn = state->flashOnMS;
+
+        delayOn = state->flashOnMS;
 	delayOff = state->flashOffMS;
 
 	if (state->flashMode != LIGHT_FLASH_NONE) {
@@ -177,9 +177,9 @@ static void set_shared_light_locked (struct light_device_t *dev, struct light_st
 		err = write_int (GREEN_LED_FILE_DELAYOFF, delayOff);
 		err = write_int (BLUE_LED_FILE_DELAYOFF, delayOff);
 	} else {
-		err = write_string (RED_LED_FILE_TRIGGER, "[none]");
-		err = write_string (GREEN_LED_FILE_TRIGGER, "[none]");
-		err = write_string (BLUE_LED_FILE_TRIGGER, "[none]");
+		err = write_string (RED_LED_FILE_TRIGGER, "none");
+		err = write_string (GREEN_LED_FILE_TRIGGER, "none");
+		err = write_string (BLUE_LED_FILE_TRIGGER, "none");
 	}
 
 	err = write_int (RED_LED_FILE, r);
