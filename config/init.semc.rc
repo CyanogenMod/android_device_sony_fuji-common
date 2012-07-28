@@ -303,16 +303,6 @@ service illumination /system/bin/illumination_service
     user system
     group system
 
-service time_daemon /system/bin/time_daemon
-    user root
-    group root
-    oneshot
-    disabled
-
-on property:persist.timed.enable=true
-    mkdir /data/time/ 0700 system system
-    start time_daemon
-
 on property:sys.usb.config=mass_storage
     exec /init.usbmode.sh
     stop adbd
