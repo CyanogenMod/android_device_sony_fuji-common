@@ -340,46 +340,6 @@ on property:persist.timed.enable=true
     mkdir /data/time/ 0700 system system
     start time_daemon
 
-on property:sys.usb.config=mass_storage
-    exec /init.usbmode.sh
-    stop adbd
-    setprop sys.usb.state $sys.usb.config
-
-on property:sys.usb.config=mass_storage,adb
-    exec /init.usbmode.sh
-    start adbd
-    setprop sys.usb.state $sys.usb.config
-
-on property:sys.usb.config=mtp
-    exec /init.usbmode.sh
-    stop adbd
-    setprop sys.usb.state $sys.usb.config
-
-on property:sys.usb.config=mtp,adb
-    exec /init.usbmode.sh
-    start adbd
-    setprop sys.usb.state $sys.usb.config
-
-on property:sys.usb.config=mtp,cdrom
-    exec /init.usbmode.sh
-    stop adbd
-    setprop sys.usb.state $sys.usb.config
-
-on property:sys.usb.config=mtp,cdrom,adb
-    exec /init.usbmode.sh
-    stop adbd
-    setprop sys.usb.state $sys.usb.config
-
-on property:sys.usb.config=rndis
-    exec /init.usbmode.sh
-    stop adbd
-    setprop sys.usb.state $sys.usb.config
-
-on property:sys.usb.config=rndis,adb
-    exec /init.usbmode.sh
-    start adbd
-    setprop sys.usb.state $sys.usb.config
-
 service hciattach /system/bin/brcm_patchram_plus --enable_hci --enable_lpm \
     --use_baudrate_for_download --tosleep 20000 --scopcm 0,4,0,0,0,0,0,0,3,0 \
     --no2bytes --baudrate 3000000 --patchram /system/etc/firmware/BCM4330.hcd \
