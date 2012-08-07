@@ -33,5 +33,4 @@ then
   /sbin/recovery&
 fi
 
-/system/bin/chargemon
 #continue booting
