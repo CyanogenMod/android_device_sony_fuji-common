@@ -412,11 +412,21 @@ struct mdp_lut_cfg_data {
  } data;
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 };
+struct mdp_qseed_cfg_data {
+ uint32_t block;
+ uint32_t table_num;
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ uint32_t ops;
+ uint32_t len;
+ uint32_t *data;
+};
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 enum {
  mdp_op_pcc_cfg,
  mdp_op_csc_cfg,
-/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
  mdp_op_lut_cfg,
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ mdp_op_qseed_cfg,
  mdp_op_max,
 };
 struct msmfb_mdp_pp {
@@ -427,27 +437,33 @@ struct msmfb_mdp_pp {
  struct mdp_csc_cfg_data csc_cfg_data;
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
  struct mdp_lut_cfg_data lut_cfg_data;
+ struct mdp_qseed_cfg_data qseed_cfg_data;
  } data;
 };
-struct mdp_page_protection {
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+struct mdp_page_protection {
  uint32_t page_protection;
 };
 struct mdp_mixer_info {
- int pndx;
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ int pndx;
  int pnum;
  int ptype;
  int mixer_num;
- int z_order;
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ int z_order;
 };
 #define MAX_PIPE_PER_MIXER 4
 struct msmfb_mixer_info_req {
- int mixer_num;
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ int mixer_num;
  int cnt;
  struct mdp_mixer_info info[MAX_PIPE_PER_MIXER];
 };
-#endif
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+enum {
+ DISPLAY_SUBSYSTEM_ID,
+ ROTATOR_SUBSYSTEM_ID,
+};
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+#endif
