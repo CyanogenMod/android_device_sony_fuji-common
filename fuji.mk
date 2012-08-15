@@ -133,5 +133,9 @@ PRODUCT_COPY_FILES += \
     bootable/recovery/res/images/progress_fill.png:root/res/images/progress_fill.png \
     bootable/recovery/res/images/stitch.png:root/res/images/stitch.png
 
+# Thermal monitor configuration
+PRODUCT_COPY_FILES += \
+    device/sony/fuji-common/config/thermald-semc.conf:system/etc/thermald-semc.conf
+
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.sys.usb.config=mass_storage
