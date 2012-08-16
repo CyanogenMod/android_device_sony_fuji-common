@@ -58,6 +58,8 @@ TARGET_QCOM_HDMI_OUT := true
 TARGET_QCOM_HDMI_RESOLUTION_AUTO := true
 BOARD_EGL_CFG := device/sony/fuji-common/config/egl.cfg
 
+CAMERA_USES_SURFACEFLINGER_CLIENT_STUB := true
+
 TARGET_PROVIDES_LIBLIGHTS := true
 
 # Workaround for missing symbols in camera
