@@ -49,6 +49,7 @@ WIFI_DRIVER_FW_PATH_PARAM        := "/sys/module/bcmdhd/parameters/firmware_path
 # Audio
 COMMON_GLOBAL_CFLAGS += -DWITH_QCOM_LPA -DQCOM_VOIP -DWITH_QCOM_VOIPMUTE
 TARGET_USES_QCOM_LPA := true
+QCOM_KERNEL_SUPPORT_LPA_PAUSE := true
 
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
