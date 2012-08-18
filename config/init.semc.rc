@@ -234,22 +234,16 @@ on init
     write /sys/class/android_usb/android0/f_rndis/vendorID 0fce
     write /sys/class/android_usb/android0/f_rndis/wceis 1
 
-    # setup the global environment
-    export EXTERNAL_STORAGE /mnt/sdcard
-    export EXTERNAL_STORAGE_USB /mnt/usbdisk
-
-    # create mountpoint
-    mkdir /mnt/usbdisk 0000 system system
-
-    # Create symlink
-    symlink /mnt/sdcard /sdcard
-    symlink /mnt/usbdisk /usbdisk
-
-    # create mountpoint
     mkdir /mnt/sdcard 0000 system system
+    # for backwards compatibility
+    symlink /mnt/sdcard /sdcard
 
-    # setup the global environment
-    export SECONDARY_STORAGE /mnt/usbdisk
+    mkdir /mnt/external_sd 0000 system system
+    symlink /mnt/external_sd /external_sd
+
+    mkdir /mnt/usbdisk 0755 system system
+
+    export EXTERNAL_STORAGE /mnt/sdcard
 
 on post-fs-data
     chown system system /sys/devices/platform/msm_hsusb/gadget/lun1/file
