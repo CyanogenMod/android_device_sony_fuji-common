@@ -52,17 +52,16 @@ PRODUCT_PACKAGES += \
     Tag \
     com.android.nfc_extras
 
-
 # Audio
 PRODUCT_PACKAGES += \
     audio.a2dp.default \
     audio_policy.msm8660 \
     audio.primary.msm8660 \
+    audio_policy.conf \
     libaudioutils
 
 PRODUCT_COPY_FILES += \
-    device/sony/fuji-common/config/media_codecs.xml:system/etc/media_codecs.xml \
-    device/sony/fuji-common/config/audio_policy.conf:system/etc/audio_policy.conf
+    device/sony/fuji-common/config/media_codecs.xml:system/etc/media_codecs.xml
 
 # Omx
 PRODUCT_PACKAGES += \
