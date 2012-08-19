@@ -42,7 +42,8 @@ PRODUCT_PACKAGES += \
     liboverlay \
     libQcomUI \
     libqdutils \
-    libtilerenderer
+    libtilerenderer \
+    libstagefright_client
 
 # NFC Support
 PRODUCT_PACKAGES += \
