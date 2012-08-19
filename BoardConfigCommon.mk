@@ -54,24 +54,20 @@ BOARD_HAVE_BLUETOOTH_BCM := true
 USE_OPENGL_RENDERER := true
 TARGET_USES_ION := true
 TARGET_USES_C2D_COMPOSITION := true
-TARGET_QCOM_HDMI_OUT := true
-TARGET_QCOM_HDMI_RESOLUTION_AUTO := true
 BOARD_EGL_CFG := device/sony/fuji-common/config/egl.cfg
 
 CAMERA_USES_SURFACEFLINGER_CLIENT_STUB := true
 
 TARGET_PROVIDES_LIBLIGHTS := true
 
-# Workaround for missing symbols in camera
+# Camera
+COMMON_GLOBAL_CFLAGS += -DICS_CAMERA_BLOB
 BOARD_NEEDS_MEMORYHEAPPMEM := true
 
 # QCOM hardware
 BOARD_USES_QCOM_HARDWARE := true
-BOARD_USES_QCOM_LIBS := true
-BOARD_USES_QCOM_PMEM := true
 
 # GPS
-BOARD_USES_QCOM_LIBRPC := true
 BOARD_USES_QCOM_GPS := true
 BOARD_VENDOR_QCOM_GPS_LOC_API_HARDWARE := semc
 BOARD_VENDOR_QCOM_GPS_LOC_API_AMSS_VERSION := 50000
@@ -93,15 +89,11 @@ BOARD_CUSTOM_GRAPHICS := ../../../device/sony/fuji-common/recovery/recovery-gfx.
 BOARD_CUSTOM_RECOVERY_KEYMAPPING := ../../device/sony/fuji-common/recovery/recovery-keys.c
 BOARD_USE_CUSTOM_RECOVERY_FONT := \"roboto_15x24.h\"
 
-BOARD_UMS_LUNFILE := "/sys/devices/platform/msm_hsusb/gadget/lun0/file"
-TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/devices/platform/msm_hsusb/gadget/lun0/file"
+TARGET_USE_CUSTOM_LUN_FILE_PATH := /sys/devices/platform/msm_hsusb/gadget/lun%d/file
 
-#Boot Animation
+# Boot Animation
 TARGET_BOOTANIMATION_PRELOAD := true
 TARGET_BOOTANIMATION_TEXTURE_CACHE := false
-
-# Nicer font rendering
-BOARD_USE_SKIA_LCDTEXT := true
 
 # Audio
 #COMMON_GLOBAL_CFLAGS += -DQCOM_VOIP_ENABLED
