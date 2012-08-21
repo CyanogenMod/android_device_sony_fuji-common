@@ -138,4 +138,4 @@ PRODUCT_COPY_FILES += \
     device/sony/fuji-common/config/thermald-semc.conf:system/etc/thermald-semc.conf
 
 PRODUCT_PROPERTY_OVERRIDES += \
-    persist.sys.usb.config=mass_storage
+    persist.sys.usb.config=mass_storage,adb
