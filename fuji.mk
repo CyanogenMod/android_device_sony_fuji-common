@@ -37,13 +37,11 @@ PRODUCT_PACKAGES += \
     gralloc.msm8660 \
     hwcomposer.msm8660 \
     libgenlock \
-    libI420colorconvert \
     libmemalloc \
     liboverlay \
     libQcomUI \
     libqdutils \
-    libtilerenderer \
-    libstagefright_client
+    libtilerenderer
 
 # NFC Support
 PRODUCT_PACKAGES += \
@@ -67,13 +65,13 @@ PRODUCT_COPY_FILES += \
 # Omx
 PRODUCT_PACKAGES += \
     libdivxdrmdecrypt \
+    libI420colorconvert \
     libmm-omxcore \
     libOmxCore \
     libOmxVdec \
     libOmxVenc \
-    libOmxAacEnc \
-    libOmxAmrEnc \
-    libstagefrighthw
+    libstagefrighthw \
+    libstagefright_client
 
 # GPS
 PRODUCT_PACKAGES += \
