@@ -6,7 +6,7 @@ on fs
     mount ext4 /dev/block/mmcblk0p12 /system wait rw barrier=1
     mkdir /system/etc/firmware/misc 0771 system system
     mount ext4 /dev/block/mmcblk0p12 /system wait ro barrier=1
-    setprop ro.crypto.state unsupported
+    setprop ro.crypto.tmpfs_options size=128m,mode=0771,uid=1000,gid=1000
     mount ext4 /dev/block/mmcblk0p14 /data wait noatime nosuid nodev data=ordered noauto_da_alloc
     mount ext4 /dev/block/mmcblk0p13 /cache wait noatime nosuid nodev data=ordered noauto_da_alloc
 
@@ -251,6 +251,7 @@ on post-fs-data
     write /sys/class/android_usb/f_mass_storage/eui64_id 000AD90000000000
     write /sys/devices/platform/msm_hsusb/gadget/lun0/nofua 1
     write /sys/devices/platform/msm_hsusb/gadget/lun1/nofua 1
+
     setprop vold.post_fs_data_done 1
 
 # Set the startup flag to boot complete, run on property change
