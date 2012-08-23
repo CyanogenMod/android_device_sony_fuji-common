@@ -81,6 +81,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     lights.msm8660
 
+# Power
+PRODUCT_PACKAGES += \
+    power.msm8660
+
 # Misc
 PRODUCT_PACKAGES += \
     com.android.future.usb.accessory
