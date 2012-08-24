@@ -259,11 +259,19 @@ on post-fs-data
     mkdir /data/misc/dhcp 0770 dhcp dhcp
     chown dhcp dhcp /data/misc/dhcp
 
+    # nvimport
+    mkdir /data/etc 0775 root root
+    mkdir /data/etc/wifi 0775 root root
+    chown root root /data/etc
+    chown root root /data/etc/wifi
+    chmod 0775 /data/etc
+    chmod 0775 /data/etc/wifi
+
     chown system system /sys/devices/platform/msm_hsusb/gadget/lun1/file
     chmod 0660 /sys/devices/platform/msm_hsusb/gadget/lun1/file
     write /sys/class/android_usb/f_mass_storage/inquiry_string "SONY    Mass Storage    0100"
     write /sys/class/android_usb/f_cdrom/cdrom_inquiry_string "SONY    CD-ROM          0100"
-    write /sys/class/android_usb/f_mass_storage/serial_number $ro.serialno
+    write /sys/class/android_usb/f_mass_storage/serial_number ${ro.serialno}
     write /sys/class/android_usb/f_mass_storage/eui64_id 000AD90000000000
     write /sys/devices/platform/msm_hsusb/gadget/lun0/nofua 1
     write /sys/devices/platform/msm_hsusb/gadget/lun1/nofua 1
