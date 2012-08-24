@@ -85,6 +85,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     power.msm8660
 
+# QRNGD
+PRODUCT_PACKAGES += \
+    qrngd
+
 # Misc
 PRODUCT_PACKAGES += \
     com.android.future.usb.accessory

@@ -452,6 +452,10 @@ service thermald /system/bin/thermald -c /system/etc/thermald-semc.conf
     user root
     disabled
 
+service qrngd /system/bin/qrngd -f
+    class late_start
+    user root
+
 on property:init.svc.bootanim=stopped
     start mpdecision
     start thermald

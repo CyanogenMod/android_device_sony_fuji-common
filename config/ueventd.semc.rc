@@ -4,6 +4,7 @@
 
 ### start from CAF/system/core/rootdir/ueventd.rc
 /dev/rtc0                 0600   system     system
+/dev/hw_random            0660   system     system
 
 # the genlock client device node is world writable/readable.
 /dev/genlock              0666   root      root
