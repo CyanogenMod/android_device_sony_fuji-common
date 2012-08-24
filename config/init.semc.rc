@@ -143,9 +143,6 @@ on boot
     mkdir /dev/bus 0711 system system
     mkdir /dev/bus/usb 0711 system system
 
-    write /sys/class/android_usb/android0/iManufacturer $ro.product.manufacturer
-    write /sys/class/android_usb/android0/iProduct $ro.product.model
-
     setprop ro.wifi.wps_enable true
 
     write /proc/sys/kernel/sysrq 0
@@ -253,12 +250,6 @@ on boot
     chmod 0660 /data/misc/tsce/logfile.txt
 
     mount debugfs /sys/kernel/debug /sys/kernel/debug
-
-on init
-    write /sys/class/android_usb/android0/iSerial $ro.serialno
-    write /sys/class/android_usb/android0/f_rndis/manufacturer $ro.product.manufacturer
-    write /sys/class/android_usb/android0/f_rndis/vendorID 0fce
-    write /sys/class/android_usb/android0/f_rndis/wceis 1
 
 on post-fs-data
     mkdir /data/media 0770 media_rw media_rw
