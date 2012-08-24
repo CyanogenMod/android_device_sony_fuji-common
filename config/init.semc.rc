@@ -126,9 +126,6 @@ on boot
     mkdir /dev/bus 0711 system system
     mkdir /dev/bus/usb 0711 system system
 
-    write /sys/class/android_usb/android0/iManufacturer $ro.product.manufacturer
-    write /sys/class/android_usb/android0/iProduct $ro.product.model
-
     setprop ro.wifi.wps_enable true
 
     write /proc/sys/kernel/sysrq 0
@@ -226,11 +223,6 @@ on boot
     insmod /system/lib/modules/bcmdhd.ko nvram_path=/system/etc/wifi/calibration iface_name=wlan0
 
 on init
-    write /sys/class/android_usb/android0/iSerial $ro.serialno
-    write /sys/class/android_usb/android0/f_rndis/manufacturer $ro.product.manufacturer
-    write /sys/class/android_usb/android0/f_rndis/vendorID 0fce
-    write /sys/class/android_usb/android0/f_rndis/wceis 1
-
     mkdir /mnt/sdcard 0000 system system
     # for backwards compatibility
     symlink /mnt/sdcard /sdcard
