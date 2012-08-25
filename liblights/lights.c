@@ -139,12 +139,11 @@ static int set_light_backlight (struct light_device_t *dev, struct light_state_t
 
 static int set_light_buttons (struct light_device_t *dev, struct light_state_t const* state) {
 	size_t i = 0;
-	int err = 0;
 	int on = is_lit(state);
 	pthread_mutex_lock(&g_lock);
 
 	for (i = 0; i < sizeof(BUTTON_BACKLIGHT_FILE)/sizeof(BUTTON_BACKLIGHT_FILE[0]); i++) {
-		err = write_int (BUTTON_BACKLIGHT_FILE[i],on?255:0);
+		write_int (BUTTON_BACKLIGHT_FILE[i], on ? rgb_to_brightness(state) : 0);
 	}
 
 	pthread_mutex_unlock(&g_lock);
@@ -154,8 +153,7 @@ static int set_light_buttons (struct light_device_t *dev, struct light_state_t c
 
 static void set_shared_light_locked (struct light_device_t *dev, struct light_state_t *state) {
 	int r, g, b;
-	int err = 0;
-       int delayOn,delayOff;
+	int delayOn,delayOff;
 
 	r = (state->color >> 16) & 0xFF;
 	g = (state->color >> 8) & 0xFF;
@@ -165,26 +163,26 @@ static void set_shared_light_locked (struct light_device_t *dev, struct light_st
 	delayOff = state->flashOffMS;
 
 	if (state->flashMode != LIGHT_FLASH_NONE) {
-		err = write_string (RED_LED_FILE_TRIGGER, "timer");
-		err = write_string (GREEN_LED_FILE_TRIGGER, "timer");
-		err = write_string (BLUE_LED_FILE_TRIGGER, "timer");
-		
-		err = write_int (RED_LED_FILE_DELAYON, delayOn);
-		err = write_int (GREEN_LED_FILE_DELAYON, delayOn);
-		err = write_int (BLUE_LED_FILE_DELAYON, delayOn);
-		
-		err = write_int (RED_LED_FILE_DELAYOFF, delayOff);
-		err = write_int (GREEN_LED_FILE_DELAYOFF, delayOff);
-		err = write_int (BLUE_LED_FILE_DELAYOFF, delayOff);
+		write_string (RED_LED_FILE_TRIGGER, "timer");
+		write_string (GREEN_LED_FILE_TRIGGER, "timer");
+		write_string (BLUE_LED_FILE_TRIGGER, "timer");
+
+		write_int (RED_LED_FILE_DELAYON, delayOn);
+		write_int (GREEN_LED_FILE_DELAYON, delayOn);
+		write_int (BLUE_LED_FILE_DELAYON, delayOn);
+
+		write_int (RED_LED_FILE_DELAYOFF, delayOff);
+		write_int (GREEN_LED_FILE_DELAYOFF, delayOff);
+		write_int (BLUE_LED_FILE_DELAYOFF, delayOff);
 	} else {
-		err = write_string (RED_LED_FILE_TRIGGER, "none");
-		err = write_string (GREEN_LED_FILE_TRIGGER, "none");
-		err = write_string (BLUE_LED_FILE_TRIGGER, "none");
+		write_string (RED_LED_FILE_TRIGGER, "none");
+		write_string (GREEN_LED_FILE_TRIGGER, "none");
+		write_string (BLUE_LED_FILE_TRIGGER, "none");
 	}
 
-	err = write_int (RED_LED_FILE, r);
-	err = write_int (GREEN_LED_FILE, g);
-	err = write_int (BLUE_LED_FILE, b);
+	write_int (RED_LED_FILE, r);
+	write_int (GREEN_LED_FILE, g);
+	write_int (BLUE_LED_FILE, b);
 }
 
 static void handle_shared_battery_locked (struct light_device_t *dev) {
@@ -250,7 +248,7 @@ static int open_lights (const struct hw_module_t* module, char const* name,
 	memset(dev, 0, sizeof(*dev));
 
 	dev->common.tag 	= HARDWARE_DEVICE_TAG;
-	dev->common.version = 0;
+	dev->common.version	= 0;
 	dev->common.module 	= (struct hw_module_t*)module;
 	dev->common.close 	= (int (*)(struct hw_device_t*))close_lights;
 	dev->set_light 		= set_light;
@@ -265,11 +263,11 @@ static struct hw_module_methods_t lights_module_methods = {
 
 
 struct hw_module_t HAL_MODULE_INFO_SYM = {
-	.tag = HARDWARE_MODULE_TAG,
-	.version_major = 1,
-	.version_minor = 0,
-	.id = LIGHTS_HARDWARE_MODULE_ID,
-	.name = "Sony lights module",
-	.author = "Diogo Ferreira <defer@cyanogenmod.com>, Andreas Makris <Andreas.Makris@gmail.com>",
-	.methods = &lights_module_methods,
+	.tag		= HARDWARE_MODULE_TAG,
+	.version_major	= 1,
+	.version_minor	= 0,
+	.id		= LIGHTS_HARDWARE_MODULE_ID,
+	.name		= "Sony lights module",
+	.author		= "Diogo Ferreira <defer@cyanogenmod.com>, Andreas Makris <Andreas.Makris@gmail.com>",
+	.methods	= &lights_module_methods,
 };
