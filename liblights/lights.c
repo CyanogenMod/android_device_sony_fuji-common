@@ -139,12 +139,11 @@ static int set_light_backlight (struct light_device_t *dev, struct light_state_t
 
 static int set_light_buttons (struct light_device_t *dev, struct light_state_t const* state) {
 	size_t i = 0;
-	int err = 0;
 	int on = is_lit(state);
 	pthread_mutex_lock(&g_lock);
 
 	for (i = 0; i < sizeof(BUTTON_BACKLIGHT_FILE)/sizeof(BUTTON_BACKLIGHT_FILE[0]); i++) {
-		err = write_int (BUTTON_BACKLIGHT_FILE[i],on?255:0);
+		write_int (BUTTON_BACKLIGHT_FILE[i], on ? rgb_to_brightness(state) : 0);
 	}
 
 	pthread_mutex_unlock(&g_lock);
@@ -154,7 +153,6 @@ static int set_light_buttons (struct light_device_t *dev, struct light_state_t c
 
 static void set_shared_light_locked (struct light_device_t *dev, struct light_state_t *state) {
 	int r, g, b;
-	int err = 0;
 	int delayOn, delayOff;
 
 /* TODO: fix strange charge color
@@ -261,8 +259,8 @@ static int open_lights (const struct hw_module_t* module, char const* name,
 	struct light_device_t *dev = malloc(sizeof (struct light_device_t));
 	memset(dev, 0, sizeof(*dev));
 
-	dev->common.tag 	= HARDWARE_DEVICE_TAG;
-	dev->common.version = 0;
+	dev->common.tag		= HARDWARE_DEVICE_TAG;
+	dev->common.version	= 0;
 	dev->common.module 	= (struct hw_module_t*)module;
 	dev->common.close 	= (int (*)(struct hw_device_t*))close_lights;
 	dev->set_light 		= set_light;
@@ -277,11 +275,11 @@ static struct hw_module_methods_t lights_module_methods = {
 
 
 struct hw_module_t HAL_MODULE_INFO_SYM = {
-	.tag = HARDWARE_MODULE_TAG,
-	.version_major = 1,
-	.version_minor = 0,
-	.id = LIGHTS_HARDWARE_MODULE_ID,
-	.name = "Sony lights module",
-	.author = "Diogo Ferreira <defer@cyanogenmod.com>, Andreas Makris <Andreas.Makris@gmail.com>",
-	.methods = &lights_module_methods,
+	.tag		= HARDWARE_MODULE_TAG,
+	.version_major	= 1,
+	.version_minor	= 0,
+	.id		= LIGHTS_HARDWARE_MODULE_ID,
+	.name		= "Sony lights module",
+	.author		= "Diogo Ferreira <defer@cyanogenmod.com>, Andreas Makris <Andreas.Makris@gmail.com>",
+	.methods	= &lights_module_methods,
 };
