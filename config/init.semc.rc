@@ -238,6 +238,10 @@ on boot
     chown system /sys/devices/system/cpu/cpufreq/ondemand/boostpulse
     chmod 664 /sys/devices/system/cpu/cpufreq/ondemand/boostpulse
 
+    # Change adj level and min_free_kbytes setting for lowmemory killer to kick in
+    echo 0,1,2,4,9,12 > /sys/module/lowmemorykiller/parameters/adj
+    echo 5120 > /proc/sys/vm/min_free_kbytes
+
     # Create the directories and files expected by the lcatp service
     # only found in eng builds.
     # Preferably the ONLY_IN_VARIANT macro should be used but
