@@ -128,10 +128,10 @@ static int set_light_backlight (struct light_device_t *dev, struct light_state_t
 			break;
 	}
 
-	ALOGV("%s brightness=%d color=0x%08x", __func__,brightness,state->color);
+	ALOGV("%s brightness=%d color=0x%08x", __func__, brightness, state->color);
 	pthread_mutex_lock(&g_lock);
 	g_backlight = brightness;
-	err = write_int (ALS_FILE, als_mode);
+	write_int (ALS_FILE, als_mode);
 	err = write_int (LCD_BACKLIGHT_FILE, brightness);
 	pthread_mutex_unlock(&g_lock);
 	return err;
