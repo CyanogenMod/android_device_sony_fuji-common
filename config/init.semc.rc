@@ -300,9 +300,16 @@ service semc-atfwd-d /system/bin/semc-atfwd-d
     oneshot
     disabled
 
+# Fast Dormancy
+service fast-dormancy /system/bin/fast-dormancy
+    user root
+    oneshot
+    disabled
+
 on property:dev.bootcomplete=1
     start setssflagbc
     start semc-atfwd-d
+    start fast-dormancy
 
 # Start suntrold
 service suntrold /system/bin/suntrold
@@ -310,11 +317,6 @@ service suntrold /system/bin/suntrold
     user system
     group system
     oneshot
-
-# Fast Dormancy
-service fast-dormancy /system/bin/fast-dormancy
-    class main
-    disabled
 
 service secchan /system/bin/secchand
     class main
