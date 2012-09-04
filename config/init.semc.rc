@@ -175,10 +175,6 @@ on boot
     chown system system /sys/devices/i2c-3/3-0054/threshold
     chown system system /sys/devices/i2c-3/3-0054/nburst
 
-    # Default tcp buffersizes for hsdpa
-    setprop net.tcp.buffersize.hsdpa 4094,87380,1220608,4096,16384,1220608
-    setprop net.tcp.buffersize.hspa 4094,87380,1220608,4096,16384,1220608
-
     # Permissions for Liblights.
     chown system system /sys/class/leds/green/brightness
     chown system system /sys/class/leds/green/trigger
