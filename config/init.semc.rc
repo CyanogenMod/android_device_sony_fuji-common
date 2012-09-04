@@ -328,17 +328,6 @@ service illumination /system/bin/illumination_service
     user system
     group system
 
-service time_daemon /system/bin/time_daemon
-    class main
-    user root
-    group root
-    oneshot
-    disabled
-
-on property:persist.timed.enable=true
-    mkdir /data/time/ 0700 system system
-    start time_daemon
-
 service hciattach /system/bin/brcm_patchram_plus --enable_hci --enable_lpm \
     --use_baudrate_for_download --tosleep 20000 --scopcm 0,4,0,0,0,0,0,0,3,0 \
     --no2bytes --baudrate 3000000 --patchram /system/etc/firmware/BCM4330.hcd \
