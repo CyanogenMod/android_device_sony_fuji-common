@@ -54,6 +54,7 @@ QCOM_KERNEL_SUPPORT_LPA_PAUSE := true
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_BCM := true
+TARGET_CUSTOM_BLUEDROID := ../../../device/sony/fuji-common/bluedroid/bluetooth.c
 
 # QCOM hardware
 BOARD_USES_QCOM_HARDWARE := true
