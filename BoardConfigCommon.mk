@@ -119,3 +119,7 @@ BOARD_HAVE_SONY_AUDIO := true
 BOARD_HAVE_BACK_MIC_CAMCORDER := true
 
 TARGET_PROVIDES_LIBLIGHTS := true
+BOARD_USE_QCOM_LPA := true
+
+# Light Sensor
+BOARD_SYSFS_LIGHT_SENSOR := /sys/class/leds/lcd-backlight/als/enable
