@@ -132,12 +132,13 @@ static void set_shared_light_locked (struct light_device_t *dev, struct light_st
 	int r, g, b;
 	int delayOn, delayOff;
 
-/* TODO: fix strange charge color
-       ALOGI("color 0x%x", state->color);
+        /* fix some color */
+        ALOGV("color 0x%x", state->color);
 
-       if (state->color == 0xffffff)
-               state->color = 0x80ff80;
-*/
+        if (state->color == 0xffffff)        // white (default)
+               state->color = 0x80ff80;      // make it less purple
+        else if (state->color == 0xffffff00) // orange (charge)
+               state->color = 0xff3000;      // make it like stock rom
 
 	r = (state->color >> 16) & 0xFF;
 	g = (state->color >> 8) & 0xFF;
