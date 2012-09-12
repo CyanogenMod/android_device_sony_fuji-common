@@ -298,14 +298,12 @@ service semc-atfwd-d /system/bin/semc-atfwd-d
 
 # Fast Dormancy
 service fast-dormancy /system/bin/fast-dormancy
+    class late_start
     user root
-    oneshot
-    disabled
 
 on property:dev.bootcomplete=1
     start setssflagbc
     start semc-atfwd-d
-    start fast-dormancy
 
 # Start suntrold
 service suntrold /system/bin/suntrold
