@@ -147,7 +147,8 @@ PRODUCT_COPY_FILES += \
 
 # Recovery bootstrap script
 PRODUCT_COPY_FILES += \
-    device/sony/fuji-common/recovery/bootrec:root/sbin/bootrec
+    device/sony/fuji-common/recovery/bootrec:root/sbin/bootrec \
+    device/sony/fuji-common/recovery/postrecoveryboot.sh:root/sbin/postrecoveryboot.sh
 
 # Recovery resources
 PRODUCT_COPY_FILES += \
