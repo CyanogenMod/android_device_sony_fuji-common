@@ -1,3 +1,4 @@
-#!/sbin/sh
-
-echo 32 > /sys/class/leds/button-backlight/brightness
+#!/system/bin/sh
+touch /cache/recovery/boot;
+sync;
+reboot;
