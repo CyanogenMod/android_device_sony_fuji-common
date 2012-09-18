@@ -16,9 +16,12 @@ then
   umount -l /system
   umount -l /data
   umount -l /cache
-  umount -l /mnt/sdcard
+  umount -l /storage/sdcard0
+  umount -l /storage/sdcard1
+  rm -r /storage/sdcard0
+  rm -r /storage/sdcard1
+  rm -r /mnt/sdcard
   rm -r /sdcard
-  rm -r /not/sdcard
   mkdir /sdcard
   mkdir /tmp
   rm /etc
