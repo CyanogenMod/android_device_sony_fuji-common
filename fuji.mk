@@ -53,11 +53,10 @@ PRODUCT_PACKAGES += \
     gralloc.msm8660 \
     hwcomposer.msm8660 \
     libgenlock \
-    libhwcexternal.so \
-    libhwcservice.so \
+    libhwcexternal \
+    libhwcservice \
     libmemalloc \
     liboverlay \
-    libqdMetaData.so \
     libqdutils \
     libtilerenderer
 
