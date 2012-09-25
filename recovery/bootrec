@@ -24,7 +24,7 @@ then
   rm /etc
   mkdir /etc
   cp /recovery.fstab /etc/recovery.fstab
-  mount /dev/block/mmcblk0p15 /sdcard
+  /sbin/bootrec-device-fs
   /sbin/recovery&
 fi
 
