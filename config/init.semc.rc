@@ -26,10 +26,10 @@ on post-fs
 
     mkdir /data/radio 0770 radio radio
 
-    mkdir /data/idd 0755 idd idd
-    mount ext4 /dev/block/mmcblk0p10 /data/idd wait nosuid nodev noatime barrier=0
-    chown idd idd /data/idd
-    chmod 0755 /data/idd
+#    mkdir /data/idd 0755 idd idd
+#    mount ext4 /dev/block/mmcblk0p10 /data/idd wait nosuid nodev noatime barrier=0
+#    chown idd idd /data/idd
+#    chmod 0755 /data/idd
 
     # Camera
     mkdir /data/camera 0771 root camera
@@ -408,10 +408,10 @@ service nvcustomizer /system/bin/nvcustomizer
 on property:ro.nvcust=1
     start nvcustomizer
 
-on property:vold.decrypt=trigger_post_fs_data
-    mkdir /data/idd 0755 idd idd
-    mount ext4 /dev/block/mmcblk0p10 /data/idd wait nosuid nodev noatime barrier=0
-    chown idd idd /data/idd
+#on property:vold.decrypt=trigger_post_fs_data
+#    mkdir /data/idd 0755 idd idd
+#    mount ext4 /dev/block/mmcblk0p10 /data/idd wait nosuid nodev noatime barrier=0
+#    chown idd idd /data/idd
 
 service hdmid /system/bin/hdmid
     class late_start
