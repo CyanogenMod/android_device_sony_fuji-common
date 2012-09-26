@@ -1,5 +1,6 @@
 import init.semc.usb.rc
 import init.semc.fs.rc
+import init.semc.service.rc
 
 on post-fs
     mkdir /data/tombstones 0755 system system
@@ -241,6 +242,11 @@ on post-fs-data
 
     setprop vold.post_fs_data_done 1
 
+service setmsflagbc /system/bin/startupflag bootstarted
+    user root
+    oneshot
+    disabled
+
 # Set the startup flag to boot complete, run on property change
 service setssflagbc /system/bin/startupflag bootcomplete
     user root
@@ -295,18 +301,13 @@ service hciattach /system/bin/brcm_patchram_plus --enable_hci --enable_lpm \
     oneshot
 
 service updatemiscta /system/bin/updatemiscta
-    class core
+    class emmc
     user root
-    disabled
     oneshot
-
-service rmt_storage /system/bin/rmt_storage
-    class main
-    user root
 
 # SEMC, TA rmt service
 service ta_rmt_service /system/bin/ta_rmt_service
-    class main
+    class emmc
     user root
 
 # Copy calibration data from NV to kernel drivers
@@ -412,4 +413,14 @@ on property:ro.hdmi.enable=true
     start hdmid
 
 on property:sys.radio.shutdown=true
-   exec /system/bin/sh /system/etc/init.qcom.efs.sync.sh
+    exec /system/bin/sh /system/etc/init.qcom.efs.sync.sh
+
+service kickstart /system/bin/qcks l
+    oneshot
+    disabled
+
+# Start kickstart if csfb target
+on property:ro.baseband=csfb
+    wait /dev/ttyHSL1
+    mkdir /data/qcks 0770 system system
+    start kickstart
