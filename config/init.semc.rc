@@ -54,6 +54,8 @@ on post-fs
     chmod 2770 /dev/socket/qmux_audio
     mkdir /dev/socket/qmux_bluetooth 0770 bluetooth bluetooth
     chmod 2770 /dev/socket/qmux_bluetooth
+    mkdir /dev/socket/qmux_gps 0770 gps gps
+    chmod 2770 /dev/socket/qmux_gps
 
     # Run pre_hw_config.sh before entering Charge only mode.
     exec /system/bin/sh /system/etc/pre_hw_config.sh
@@ -416,7 +418,7 @@ service iprenew_bnep0 /system/bin/dhcpcd -n
 service qmuxd /system/bin/qmuxd
     class main
     user radio
-    group radio audio bluetooth gps
+    group radio audio bluetooth gps qcom_diag
 
 service netmgrd /system/bin/netmgrd
     class late_start
