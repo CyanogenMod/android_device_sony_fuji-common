@@ -10,6 +10,8 @@ if [ -s /dev/keycheck -o -e /cache/recovery/boot ]
 then
   rm /cache/recovery/boot
 
+  stop ta_rmt_service
+  stop rmt_storage
   stop tad
 
   mount -o remount,rw rootfs /
