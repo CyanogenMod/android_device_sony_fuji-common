@@ -21,8 +21,11 @@ then
   rm -r /storage/sdcard0
   rm -r /storage/sdcard1
   rm -r /mnt/sdcard
+  rm -r /mnt/external_sd
   rm -r /sdcard
   mkdir /sdcard
+  rm -r /external_sd
+  mkdir /external_sd
   mkdir /tmp
   rm /etc
   mkdir /etc
