@@ -142,6 +142,11 @@ PRODUCT_COPY_FILES += \
     device/sony/fuji-common/recovery/bootrec:root/sbin/bootrec \
     device/sony/fuji-common/recovery/postrecoveryboot.sh:root/sbin/postrecoveryboot.sh
 
+# CNE config
+PRODUCT_COPY_FILES += \
+   device/sony/fuji-common/config/OperatorPolicy.xml:system/etc/OperatorPolicy.xml \
+   device/sony/fuji-common/config/UserPolicy.xml:system/etc/UserPolicy.xml
+
 # Thermal monitor configuration
 PRODUCT_COPY_FILES += \
     device/sony/fuji-common/config/thermald-semc.conf:system/etc/thermald-semc.conf
