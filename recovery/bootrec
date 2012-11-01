@@ -11,6 +11,8 @@ then
   rm /cache/recovery/boot
 
   stop tad
+  stop ta_qmi_service
+  stop rmt_storage
 
   mount -o remount,rw rootfs /
   umount -l /system
