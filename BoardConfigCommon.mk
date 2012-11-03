@@ -82,6 +82,7 @@ TARGET_CUSTOM_BLUEDROID := ../../../device/sony/fuji-common/bluedroid/bluetooth.
 
 # Webkit
 ENABLE_WEBGL := true
+TARGET_FORCE_CPU_UPLOAD := true
 
 # Custom boot
 TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
