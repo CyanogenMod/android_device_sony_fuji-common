@@ -321,11 +321,6 @@ service secchan /system/bin/secchand
     user system
     group system
 
-service illumination /system/bin/illumination_service
-    class main
-    user system
-    group system
-
 service hciattach /system/bin/brcm_patchram_plus --enable_hci --enable_lpm \
     --use_baudrate_for_download --tosleep 20000 --scopcm 0,4,0,0,0,0,0,0,3,0 \
     --no2bytes --baudrate 3000000 --patchram /system/etc/firmware/BCM4330.hcd \
