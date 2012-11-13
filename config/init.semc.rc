@@ -23,6 +23,7 @@ on fs
     # SEMC, TA Daemon
     class_start trimarea
     exec /system/bin/wait4tad
+    class start emmc
 
 on post-fs
     mkdir /system/etc/firmware/misc 0771 system system
@@ -333,18 +334,14 @@ service hciattach /system/bin/brcm_patchram_plus --enable_hci --enable_lpm \
     oneshot
 
 service updatemiscta /system/bin/updatemiscta
-    class core
+    class emmc
     user root
     disabled
     oneshot
 
-service rmt_storage /system/bin/rmt_storage
-    class main
-    user root
-
 # SEMC, TA rmt service
 service ta_rmt_service /system/bin/ta_rmt_service
-    class main
+    class emmc
     user root
 
 # Copy calibration data from NV to kernel drivers
