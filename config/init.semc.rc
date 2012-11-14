@@ -174,6 +174,7 @@ on boot
 
     # bluetooth address programming
     setprop ro.bt.bdaddr_path /data/etc/bluetooth_bdaddr
+    chown bluetooth bluetooth ro.bt.bdaddr_path
 
     # power-management
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor ondemand
