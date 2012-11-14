@@ -23,7 +23,7 @@ on fs
     # SEMC, TA Daemon
     class_start trimarea
     exec /system/bin/wait4tad
-    class start emmc
+    class_start emmc
 
 on post-fs
     mkdir /system/etc/firmware/misc 0771 system system
@@ -336,7 +336,6 @@ service hciattach /system/bin/brcm_patchram_plus --enable_hci --enable_lpm \
 service updatemiscta /system/bin/updatemiscta
     class emmc
     user root
-    disabled
     oneshot
 
 # SEMC, TA rmt service
@@ -452,7 +451,6 @@ on property:init.svc.bootanim=stopped
     start thermald
 
 service nvcustomizer /system/bin/nvcustomizer
-    class late_start
     user root
     oneshot
     disabled
