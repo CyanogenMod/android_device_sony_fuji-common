@@ -323,6 +323,17 @@ service secchan /system/bin/secchand
     user system
     group system
 
+# Copy calibration data from NV to kernel drivers
+service nvimport /system/bin/nvimport
+    class main
+    user root
+    oneshot
+
+service fixbt /system/bin/sh /system/etc/init.fixbt.sh
+    class main
+    user root
+    oneshot
+
 service hciattach /system/bin/brcm_patchram_plus --enable_hci --enable_lpm \
     --use_baudrate_for_download --tosleep 20000 --scopcm 0,4,0,0,0,0,0,0,3,0 \
     --no2bytes --baudrate 3000000 --patchram /system/etc/firmware/BCM4330.hcd \
@@ -342,12 +353,6 @@ service updatemiscta /system/bin/updatemiscta
 service ta_rmt_service /system/bin/ta_rmt_service
     class emmc
     user root
-
-# Copy calibration data from NV to kernel drivers
-service nvimport /system/bin/nvimport
-    class main
-    user root
-    oneshot
 
 service p2p_supplicant /system/bin/wpa_supplicant \
     -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf -N \
