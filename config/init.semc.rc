@@ -288,6 +288,11 @@ on post-fs-data
 
     setprop vold.post_fs_data_done 1
 
+service setmsflagbc /system/bin/startupflag bootstarted
+    user root
+    oneshot
+    disabled
+
 # Set the startup flag to boot complete, run on property change
 service setssflagbc /system/bin/startupflag bootcomplete
     class main
