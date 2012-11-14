@@ -66,10 +66,6 @@ on early-boot
     # Start the offline charging (This blocks booting further in some cases)
     exec /system/bin/chargemon
 
-    exec /sbin/bootrec
-
-    # Make sure the crashsms/crashes are writable by crashmonitor
-
     # set RLIMIT_MEMLOCK to 64MB
     setrlimit 8 67108864 67108864
 
