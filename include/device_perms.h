@@ -1,42 +1,24 @@
-#define PROPERTY_PERMS
+/*
+ * Copyright (C) 2012 The CyanogenMod Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-struct {
-    const char *prefix;
-    unsigned int uid;
-    unsigned int gid;
-} property_perms[] = {
-    { "net.rmnet",        AID_RADIO,    0 },
-    { "net.gprs.",        AID_RADIO,    0 },
-    { "net.ppp",          AID_RADIO,    0 },
-    { "net.qmi",          AID_RADIO,    0 },
-    { "net.lte",          AID_RADIO,    0 },
-    { "net.cdma",         AID_RADIO,    0 },
-    { "ril.",             AID_RADIO,    0 },
-    { "gsm.",             AID_RADIO,    0 },
-    { "persist.radio",    AID_RADIO,    0 },
-    { "net.dns",          AID_RADIO,    0 },
-    { "sys.usb.config",   AID_RADIO,    0 },
-    { "net.",             AID_SYSTEM,   0 },
-    { "dev.",             AID_SYSTEM,   0 },
-    { "runtime.",         AID_SYSTEM,   0 },
-    { "hw.",              AID_SYSTEM,   0 },
-    { "sys.",             AID_SYSTEM,   0 },
-    { "service.",         AID_SYSTEM,   0 },
-    { "service.",         AID_RADIO,    0 },
-    { "wlan.",            AID_SYSTEM,   0 },
-    { "dhcp.",            AID_SYSTEM,   0 },
-    { "dhcp.",            AID_DHCP,     0 },
-    { "debug.",           AID_SYSTEM,   0 },
-    { "debug.",           AID_SHELL,    0 },
-    { "log.",             AID_SHELL,    0 },
-    { "service.adb.root", AID_SHELL,    0 },
-    { "service.adb.tcp.port", AID_SHELL,    0 },
-    { "persist.sys.",     AID_SYSTEM,   0 },
-    { "persist.service.", AID_SYSTEM,   0 },
-    { "persist.service.", AID_RADIO,    0 },
-    { "persist.security.",AID_SYSTEM,   0 },
-    { "net.pdp",          AID_RADIO,    AID_RADIO },
-    { "service.bootanim.exit", AID_GRAPHICS, 0 },
+#ifndef DEVICE_PERMS_H
+#define DEVICE_PERMS_H
+
+#define PROPERTY_PERMS_APPEND \
     { "camera.",          AID_MEDIA,    0 },
-    { NULL, 0, 0 }
-};
+
+#endif /* DEVICE_PERMS_H */
+
