@@ -159,7 +159,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # Radio
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.telephony.ril_class=SonyQualcommRIL \
-    ro.telephony.ril.v3=skipnullaid,skippinpukcount \
+    ro.telephony.ril.v3=skippinpukcount \
+    ro.telephony.call_ring.multiple=false \
     rild.libpath=/system/lib/libril-qc-qmi-1.so \
     rild.libargs=-d /dev/smd0 \
     persist.rild.nitz_plmn= \
