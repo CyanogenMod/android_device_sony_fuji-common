@@ -177,7 +177,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.ril.hsxpa=1 \
     ro.ril.gprsclass=10 \
     ro.use_data_netmgrd=true \
-    persist.data_netmgrd_nint=3 \
     ro.ril.transmitpower=true
 
 # Graphics

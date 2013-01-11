@@ -308,6 +308,9 @@ service fast-dormancy /system/bin/fast-dormancy
     class late_start
     user root
 
+on property:ro.enable.fast_dormancy=false
+    stop fast-dormancy
+
 on property:dev.bootcomplete=1
     start setssflagbc
     start semc-atfwd-d
