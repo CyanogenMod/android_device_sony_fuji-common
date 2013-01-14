@@ -112,6 +112,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     com.android.future.usb.accessory
 
+# Recovery
+PRODUCT_PACKAGES += \
+    extract_elf_ramdisk
+
 # Live Wallpapers
 PRODUCT_PACKAGES += \
     LiveWallpapers \

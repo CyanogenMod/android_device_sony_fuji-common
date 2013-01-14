@@ -51,6 +51,11 @@ then
 	busybox echo 0 > ${BOOTREC_LED_GREEN}
 	busybox echo 255 > ${BOOTREC_LED_BLUE}
 	# recovery ramdisk
+	busybox mknod -m 600 ${BOOTREC_FOTA_NODE}
+	busybox mount -o remount,rw /
+	busybox ln -sf /sbin/busybox /sbin/sh
+	extract_elf_ramdisk -i ${BOOTREC_FOTA} -o /sbin/ramdisk-recovery.cpio -t / -c
+	busybox rm /sbin/sh
 	load_image=/sbin/ramdisk-recovery.cpio
 else
 	busybox echo 'ANDROID BOOT' >>boot.txt
