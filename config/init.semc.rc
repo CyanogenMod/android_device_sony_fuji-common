@@ -338,6 +338,12 @@ service fixbt /system/bin/sh /system/etc/init.fixbt.sh
     user root
     oneshot
 
+service btld /system/bin/btld -lpm 1
+    user root
+    group bluetooth net_bt_admin
+    disabled
+    oneshot
+
 service hciattach /system/bin/brcm_patchram_plus --enable_hci --enable_lpm \
     --use_baudrate_for_download --tosleep 20000 --scopcm 0,4,0,0,0,0,0,0,3,0 \
     --no2bytes --baudrate 3000000 --patchram /system/etc/firmware/BCM4330.hcd \

@@ -104,3 +104,7 @@ BOARD_USE_QCOM_LPA := true
 
 # Light Sensor
 BOARD_SYSFS_LIGHT_SENSOR := /sys/class/leds/lcd-backlight/als/enable
+
+# FM radio
+COMMON_GLOBAL_CFLAGS += -DSTE_FM
+BOARD_USES_STE_FMRADIO := true
