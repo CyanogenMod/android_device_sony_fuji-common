@@ -78,7 +78,7 @@
 
     <!-- Boolean indicating if current platform supports quick switch-on/off of
                   Bluetooth Module -->
-    <bool name="config_bluetooth_adapter_quick_switch">false</bool>
+    <!-- <bool name="config_bluetooth_adapter_quick_switch">false</bool> -->
 
     <string-array translatable="false" name="config_tether_usb_regexs">
     <item>"rndis0"</item>
@@ -136,7 +136,7 @@
     <!-- Is the notification LED intrusive? Used to decide if there should be a disable option -->
     <bool name="config_intrusiveNotificationLed">true</bool>
 
-    <bool name="config_autoBrightnessButtonKeyboard">false</bool>
+    <!--<bool name="config_autoBrightnessButtonKeyboard">false</bool> -->
 
     <bool name="config_ui_enableFadingMarquee">false</bool>
 
