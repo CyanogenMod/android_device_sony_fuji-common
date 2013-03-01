@@ -210,3 +210,9 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # ALS
 PRODUCT_PROPERTY_OVERRIDES += \
    ro.hardware.respect_als=true
+
+# Include non-opensource parts if available
+$(call inherit-product-if-exists, vendor/sony/qcom-common/common-vendor.mk)
+
+# Include non-opensource parts if available
+$(call inherit-product-if-exists, vendor/sony/fuji-common/common-vendor.mk)
