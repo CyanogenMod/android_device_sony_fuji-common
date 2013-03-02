@@ -25,10 +25,6 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/handheld_core_hardware.xml:system/etc/permissions/handheld_core_hardware.xml \
     packages/wallpapers/LivePicker/android.software.live_wallpaper.xml:system/etc/permissions/android.software.live_wallpaper.xml
 
-# Bootsplash
-PRODUCT_COPY_FILES += \
-   device/sony/fuji-common/prebuilt/logo_X.rle:root/logo.rle
-
 # EGL config
 PRODUCT_COPY_FILES += \
     device/sony/fuji-common/config/egl.cfg:system/lib/egl/egl.cfg
