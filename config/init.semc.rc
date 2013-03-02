@@ -449,7 +449,6 @@ service thermald /system/bin/thermald -c /system/etc/thermald-semc.conf
     class main
     socket thermald stream 0666 root root
     user root
-    disabled
 
 service qrngd /system/bin/qrngd -f
     class late_start
