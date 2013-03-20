@@ -217,3 +217,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # ALS
 PRODUCT_PROPERTY_OVERRIDES += \
    ro.hardware.respect_als=true
+
+$(call inherit-product, vendor/sony/qcom-common/common-vendor.mk)
+
+$(call inherit-product, vendor/sony/fuji-common/common-vendor.mk)
