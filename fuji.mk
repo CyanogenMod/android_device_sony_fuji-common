@@ -172,9 +172,5 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.hwui.text_cache_width=2048
 
-# ALS
-PRODUCT_PROPERTY_OVERRIDES += \
-   ro.hardware.respect_als=true
-
 # Include non-opensource parts if available
 $(call inherit-product-if-exists, vendor/sony/fuji-common/common-vendor.mk)

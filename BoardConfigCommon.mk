@@ -92,15 +92,11 @@ BOARD_USE_QCOM_LPA := true
 
 # Sensors
 SOMC_CFG_SENSORS := true
-SOMC_CFG_SENSORS_LIGHT_LIBALS := yes
+SOMC_CFG_SENSORS_LIGHT_AS3676 := yes
 SOMC_CFG_SENSORS_GYRO_MPU3050 := yes
 SOMC_CFG_SENSORS_PROXIMITY_APDS9702 := yes
 SOMC_CFG_SENSORS_ACCEL_BMA250NA_INPUT := yes
 SOMC_CFG_SENSORS_COMPASS_AK8972 := yes
-
-
-# Light Sensor
-BOARD_SYSFS_LIGHT_SENSOR := /sys/class/leds/lcd-backlight/als/enable
 
 # inherit from fuji-common
 -include vendor/sony/fuji-common/BoardConfigCommon.mk
