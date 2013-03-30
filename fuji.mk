@@ -35,10 +35,6 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     FmRadio
 
-# EGL config
-PRODUCT_COPY_FILES += \
-    device/sony/fuji-common/config/egl.cfg:system/lib/egl/egl.cfg
-
 # Common Qualcomm scripts
 PRODUCT_COPY_FILES += \
     device/sony/fuji-common/config/init.qcom.efs.sync.sh:system/etc/init.qcom.efs.sync.sh
@@ -76,9 +72,6 @@ PRODUCT_PACKAGES += \
     audio.primary.msm8660 \
     audio_policy.conf \
     libaudioutils
-
-PRODUCT_COPY_FILES += \
-    device/sony/fuji-common/config/media_codecs.xml:system/etc/media_codecs.xml
 
 # GPS
 PRODUCT_PACKAGES += \
