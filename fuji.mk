@@ -85,10 +85,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     sensors.default
 
-# QRNGD
-PRODUCT_PACKAGES += \
-    qrngd
-
 # Misc
 PRODUCT_PACKAGES += \
     com.android.future.usb.accessory
