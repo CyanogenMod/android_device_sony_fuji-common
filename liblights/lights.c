@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2008 The Android Open Source Project
  * Copyright (C) 2011 Diogo Ferreira <defer@cyanogenmod.com>
- * Copyright (C) 2011 The CyanogenMod Project <http://www.cyanogenmod.com>
+ * Copyright (C) 2012 The CyanogenMod Project <http://www.cyanogenmod.org>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,12 +25,37 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <pthread.h>
+#include <math.h>
 
 #include <sys/ioctl.h>
 #include <sys/types.h>
 
 #include <hardware/lights.h>
-#include "lights.h"
+
+char const*const LCD_BACKLIGHT_FILE		= "/sys/class/leds/lcd-backlight/brightness";
+char const*const LCD_BACKLIGHT2_FILE            = "/dev/null";
+char const*const RED_LED_FILE 			= "/sys/class/leds/red/brightness";
+char const*const GREEN_LED_FILE 		= "/sys/class/leds/green/brightness";
+char const*const BLUE_LED_FILE 			= "/sys/class/leds/blue/brightness";
+
+char const*const ALS_FILE			= "/sys/class/leds/lcd-backlight/als/enable";
+
+char const*const LED_FILE_TRIGGER[] = {
+        "/sys/class/leds/red/trigger",
+        "/sys/class/leds/green/trigger",
+        "/sys/class/leds/blue/trigger",
+};
+
+char const*const LED_FILE_PATTERN      = "/sys/devices/i2c-10/10-0040/pattern_data";
+char const*const LED_FILE_REPEATDELAY  = "/sys/devices/i2c-10/10-0040/pattern_delay";
+char const*const LED_FILE_PATTERNLEN   = "/sys/devices/i2c-10/10-0040/pattern_duration_secs";
+char const*const LED_FILE_DIMONOFF     = "/sys/devices/i2c-10/10-0040/pattern_use_softdim";
+char const*const LED_FILE_DIMTIME      = "/sys/devices/i2c-10/10-0040/dim_time";
+
+const int LCD_BRIGHTNESS_MIN = 10;
+
+char const*const ON = "1";
+char const*const OFF = "0";
 
 /* Synchronization primities */
 static pthread_once_t g_init = PTHREAD_ONCE_INIT;
@@ -101,72 +126,112 @@ static int rgb_to_brightness (struct light_state_t const* state) {
 			+ (150*((color>>8)&0x00ff)) + (29*(color&0x00ff))) >> 8;
 }
 
+static int brightness_apply_gamma (int brightness) {
+	double floatbrt = (double) brightness;
+	floatbrt /= 255.0;
+	ALOGV("%s: brightness = %d, floatbrt = %f", __func__, brightness, floatbrt);
+	floatbrt = pow(floatbrt,2.2);
+	ALOGV("%s: gamma corrected floatbrt = %f", __func__, floatbrt);
+	floatbrt *= 255.0;
+	brightness = (int) floatbrt;
+	if (brightness < LCD_BRIGHTNESS_MIN)
+		brightness = LCD_BRIGHTNESS_MIN;
+	ALOGV("%s: gamma corrected brightness = %d", __func__, brightness);
+	return brightness;
+}
+
 /* The actual lights controlling section */
 static int set_light_backlight (struct light_device_t *dev, struct light_state_t const *state) {
 	int err = 0;
+	int enable = 0;
 	int brightness = rgb_to_brightness(state);
 
-	ALOGV("%s brightness=%d", __func__, brightness);
+	if(brightness > 0)
+		brightness = brightness_apply_gamma(brightness);
+
+	if ((state->brightnessMode == BRIGHTNESS_MODE_SENSOR) && (brightness > 0))
+		enable = 1;
+
+	ALOGV("%s brightness = %d", __func__, brightness);
 	pthread_mutex_lock(&g_lock);
-	err = write_int (LCD_BACKLIGHT_FILE, brightness);
+	err = write_int (ALS_FILE, enable);
+	err |= write_int (LCD_BACKLIGHT_FILE, brightness);
+	err |= write_int (LCD_BACKLIGHT2_FILE, brightness);
 	pthread_mutex_unlock(&g_lock);
 
 	return err;
 }
 
 static int set_light_buttons (struct light_device_t *dev, struct light_state_t const* state) {
-	size_t i = 0;
-	int on = is_lit(state);
-	pthread_mutex_lock(&g_lock);
-
-	for (i = 0; i < sizeof(BUTTON_BACKLIGHT_FILE)/sizeof(BUTTON_BACKLIGHT_FILE[0]); i++) {
-		write_int (BUTTON_BACKLIGHT_FILE[i], on ? rgb_to_brightness(state) : 0);
-	}
-
-	pthread_mutex_unlock(&g_lock);
-
 	return 0;
 }
 
 static void set_shared_light_locked (struct light_device_t *dev, struct light_state_t *state) {
-	int r, g, b;
-	int delayOn, delayOff;
+	int r, g, b, i;
 
-        /* fix some color */
-        ALOGV("color 0x%x", state->color);
+	uint32_t pattern = 0;
+	uint32_t patbits = 0;
+	uint32_t numbits, delayshift;
 
-        if (state->color == 0xffffff)        // white (default)
-               state->color = 0x80ff80;      // make it less purple
-        else if (state->color == 0xffffff00) // orange (charge)
-               state->color = 0xff3000;      // make it like stock rom
+	char patternstr[11];
+
+	ALOGV("color 0x%x", state->color);
 
 	r = (state->color >> 16) & 0xFF;
 	g = (state->color >> 8) & 0xFF;
 	b = (state->color) & 0xFF;
 
-	delayOn = state->flashOnMS;
-	delayOff = state->flashOffMS;
+	ALOGV("flashOn = %d, flashOff = %d", state->flashOnMS, state->flashOffMS);
+
+	if (state->flashOnMS == 1)
+		state->flashMode = LIGHT_FLASH_NONE;
+	else {
+		numbits = state->flashOnMS / 250;
+		delayshift = state->flashOffMS / 250;
+
+		// Make sure we never do 0 on time
+		if (numbits == 0)
+			numbits = 1;
+
+		// Always make sure period is >2x the on time, we don't support
+		// more than 50% duty cycle
+		if (delayshift < numbits * 2)
+			delayshift = numbits * 2;
+
+		ALOGV("numbits = %d, delayshift = %d", numbits, delayshift);
+
+		patbits = ((uint32_t)1 << numbits) - 1;
+		ALOGV("patbits = 0x%x", patbits);
+
+		for (i = 0; i < 32; i += delayshift) {
+			pattern = pattern | (patbits << i);
+		}
+
+		ALOGV("pattern = 0x%x", pattern);
+
+		snprintf(patternstr, 11, "0x%x", pattern);
+
+		ALOGV("patternstr = %s", patternstr);
+	}
 
 	switch (state->flashMode) {
 	case LIGHT_FLASH_TIMED:
 	case LIGHT_FLASH_HARDWARE:
-		write_string (RED_LED_FILE_TRIGGER, "timer");
-		write_string (GREEN_LED_FILE_TRIGGER, "timer");
-		write_string (BLUE_LED_FILE_TRIGGER, "timer");
-
-		write_int (RED_LED_FILE_DELAYON, delayOn);
-		write_int (GREEN_LED_FILE_DELAYON, delayOn);
-		write_int (BLUE_LED_FILE_DELAYON, delayOn);
-
-		write_int (RED_LED_FILE_DELAYOFF, delayOff);
-		write_int (GREEN_LED_FILE_DELAYOFF, delayOff);
-		write_int (BLUE_LED_FILE_DELAYOFF, delayOff);
+		for (i = 0; i < sizeof(LED_FILE_TRIGGER)/sizeof(LED_FILE_TRIGGER[0]); i++) {
+			write_string (LED_FILE_TRIGGER[i], ON);
+		}
+		write_string (LED_FILE_DIMONOFF, ON);
+		write_int (LED_FILE_DIMTIME, numbits * 125);
+		write_string (LED_FILE_PATTERN, patternstr);
+		write_int (LED_FILE_PATTERNLEN, 8);
+		write_int (LED_FILE_REPEATDELAY, 0);
 		break;
 
 	case LIGHT_FLASH_NONE:
-		write_string (RED_LED_FILE_TRIGGER, "none");
-		write_string (GREEN_LED_FILE_TRIGGER, "none");
-		write_string (BLUE_LED_FILE_TRIGGER, "none");
+		for (i = 0; i < sizeof(LED_FILE_TRIGGER)/sizeof(LED_FILE_TRIGGER[0]); i++) {
+			write_string (LED_FILE_TRIGGER[i], OFF);
+		}
+		write_string (LED_FILE_DIMONOFF, OFF);
 		break;
 	}
 
@@ -176,11 +241,10 @@ static void set_shared_light_locked (struct light_device_t *dev, struct light_st
 }
 
 static void handle_shared_battery_locked (struct light_device_t *dev) {
-	if (is_lit (&g_notification)) {
+	if (is_lit (&g_notification))
 		set_shared_light_locked (dev, &g_notification);
-	} else {
+	else
 		set_shared_light_locked (dev, &g_battery);
-	}
 }
 
 static int set_light_battery (struct light_device_t *dev, struct light_state_t const* state) {
@@ -217,21 +281,16 @@ static int open_lights (const struct hw_module_t* module, char const* name,
 	int (*set_light)(struct light_device_t* dev,
 					 struct light_state_t const *state);
 
-	if (0 == strcmp(LIGHT_ID_BACKLIGHT, name)) {
+	if (0 == strcmp(LIGHT_ID_BACKLIGHT, name))
 		set_light = set_light_backlight;
-	}
-	else if (0 == strcmp(LIGHT_ID_BUTTONS, name)) {
+	else if (0 == strcmp(LIGHT_ID_BUTTONS, name))
 		set_light = set_light_buttons;
-	}
-	else if (0 == strcmp(LIGHT_ID_BATTERY, name)) {
+	else if (0 == strcmp(LIGHT_ID_BATTERY, name))
 		set_light = set_light_battery;
-	}
-	else if (0 == strcmp(LIGHT_ID_NOTIFICATIONS, name)) {
+	else if (0 == strcmp(LIGHT_ID_NOTIFICATIONS, name))
 		set_light = set_light_notifications;
-	}
-	else {
+	else
 		return -EINVAL;
-	}
 
 	pthread_once (&g_init, init_globals);
 	struct light_device_t *dev = malloc(sizeof (struct light_device_t));
