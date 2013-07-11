@@ -114,7 +114,8 @@ PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
 PRODUCT_COPY_FILES += \
     device/sony/fuji-common/rootdir/init.semc.rc:root/init.semc.rc \
     device/sony/fuji-common/rootdir/system/etc/init.fixbt.sh:system/etc/init.fixbt.sh \
-    device/sony/fuji-common/rootdir/ueventd.semc.rc:root/ueventd.semc.rc
+    device/sony/fuji-common/rootdir/ueventd.semc.rc:root/ueventd.semc.rc \
+    device/sony/fuji-common/rootdir/init.recovery.qcom.rc:root/init.recovery.qcom.rc
 
 # Post recovery script
 PRODUCT_COPY_FILES += \
