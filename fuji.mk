@@ -37,7 +37,7 @@ PRODUCT_PACKAGES += \
 
 # Common Qualcomm scripts
 PRODUCT_COPY_FILES += \
-    device/sony/fuji-common/config/init.qcom.efs.sync.sh:system/etc/init.qcom.efs.sync.sh
+    device/sony/fuji-common/rootdir/system/etc/init.qcom.efs.sync.sh:system/etc/init.qcom.efs.sync.sh
 
 # QCOM Display
 PRODUCT_PACKAGES += \
@@ -58,9 +58,9 @@ PRODUCT_COPY_FILES += \
 
 # NFCEE access control
 ifeq ($(TARGET_BUILD_VARIANT),user)
-    NFCEE_ACCESS_PATH := device/sony/fuji-common/config/nfcee_access.xml
+    NFCEE_ACCESS_PATH := device/sony/fuji-common/rootdir/system/etc/nfcee_access.xml
 else
-    NFCEE_ACCESS_PATH := device/sony/fuji-common/config/nfcee_access_debug.xml
+    NFCEE_ACCESS_PATH := device/sony/fuji-common/rootdir/system/etc/nfcee_access_debug.xml
 endif
 PRODUCT_COPY_FILES += \
     $(NFCEE_ACCESS_PATH):system/etc/nfcee_access.xml
@@ -112,9 +112,9 @@ PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
 
 # Custom init / uevent
 PRODUCT_COPY_FILES += \
-    device/sony/fuji-common/config/init.semc.rc:root/init.semc.rc \
-    device/sony/fuji-common/config/init.fixbt.sh:system/etc/init.fixbt.sh \
-    device/sony/fuji-common/config/ueventd.semc.rc:root/ueventd.semc.rc
+    device/sony/fuji-common/rootdir/init.semc.rc:root/init.semc.rc \
+    device/sony/fuji-common/rootdir/system/etc/init.fixbt.sh:system/etc/init.fixbt.sh \
+    device/sony/fuji-common/rootdir/ueventd.semc.rc:root/ueventd.semc.rc
 
 # Post recovery script
 PRODUCT_COPY_FILES += \
@@ -122,12 +122,12 @@ PRODUCT_COPY_FILES += \
 
 # CNE config
 PRODUCT_COPY_FILES += \
-   device/sony/fuji-common/config/OperatorPolicy.xml:system/etc/OperatorPolicy.xml \
-   device/sony/fuji-common/config/UserPolicy.xml:system/etc/UserPolicy.xml
+   device/sony/fuji-common/rootdir/system/etc/OperatorPolicy.xml:system/etc/OperatorPolicy.xml \
+   device/sony/fuji-common/rootdir/system/etc/UserPolicy.xml:system/etc/UserPolicy.xml
 
 # Thermal monitor configuration
 PRODUCT_COPY_FILES += \
-    device/sony/fuji-common/config/thermald-semc.conf:system/etc/thermald-semc.conf
+    device/sony/fuji-common/rootdir/system/etc/thermald-semc.conf:system/etc/thermald-semc.conf
 
 # Set default USB interface
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
