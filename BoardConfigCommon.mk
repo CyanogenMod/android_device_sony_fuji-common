@@ -28,10 +28,11 @@ TARGET_BOOTLOADER_BOARD_NAME := MSM8660
 TARGET_BOARD_PLATFORM := msm8660
 TARGET_VENDOR_PLATFORM := fuji
 
-# Flags
+# Architechture Flags
+TARGET_ARCH_VARIANT_CPU := cortex-a9
 TARGET_GLOBAL_CFLAGS += -mfpu=neon -mfloat-abi=softfp
 TARGET_GLOBAL_CPPFLAGS += -mfpu=neon -mfloat-abi=softfp
-COMMON_GLOBAL_CFLAGS += -DQCOM_NO_SECURE_PLAYBACK
+COMMON_GLOBAL_CFLAGS += -D__ARM_USE_PLD -D__ARM_CACHE_LINE_SIZE=64
 
 # Scorpion optimizations
 TARGET_USE_SCORPION_BIONIC_OPTIMIZATION := true
@@ -45,6 +46,7 @@ BOARD_KERNEL_BASE := 0x40200000
 BOARD_RECOVERY_BASE := 0x40200000
 BOARD_KERNEL_PAGESIZE := 2048
 SONY_FORCE_RAMDISK_ADDRESS := 0x41500000
+BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x01300000
 
 # Wifi related defines
 BOARD_WLAN_DEVICE                := bcmdhd
@@ -53,19 +55,18 @@ BOARD_WPA_SUPPLICANT_DRIVER      := NL80211
 BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_bcmdhd
 BOARD_HOSTAPD_DRIVER             := NL80211
 BOARD_HOSTAPD_PRIVATE_LIB        := lib_driver_cmd_bcmdhd
-WIFI_DRIVER_FW_PATH_STA          := "/vendor/firmware/fw_bcmdhd.bin"
-WIFI_DRIVER_FW_PATH_AP           := "/vendor/firmware/fw_bcmdhd_apsta.bin"
-WIFI_DRIVER_FW_PATH_P2P          := "/vendor/firmware/fw_bcmdhd_p2p.bin"
-WIFI_DRIVER_FW_PATH_PARAM        := "/sys/module/bcmdhd/parameters/firmware_path"
-BOARD_LEGACY_NL80211_STA_EVENTS  := true
+WIFI_DRIVER_FW_PATH_PARAM        := "/sys/module/bcm4330/parameters/firmware_path"
+WIFI_DRIVER_FW_PATH_STA          := "/system/etc/firmware/fw_bcm4330b2.bin"
+WIFI_DRIVER_FW_PATH_AP           := "/system/etc/firmware/fw_bcm4330b2_apsta.bin"
+WIFI_DRIVER_FW_PATH_P2P          := "/system/etc/firmware/fw_bcm4330b2_p2p.bin"
+#BOARD_LEGACY_NL80211_STA_EVENTS  := true
 
 # Lights
 TARGET_PROVIDES_LIBLIGHT := true
 
 # GPS
-BOARD_USES_QCOM_GPS := true
-BOARD_VENDOR_QCOM_GPS_LOC_API_HARDWARE := semc
-BOARD_VENDOR_QCOM_GPS_LOC_API_AMSS_VERSION := 50000
+BOARD_VENDOR_QCOM_GPS_LOC_API_HARDWARE := $(TARGET_BOARD_PLATFORM)
+TARGET_NO_RPC := true
 
 # Bluetooth
 BOARD_HAVE_BLUETOOTH_BCM := true
@@ -80,6 +81,7 @@ BOARD_CUSTOM_GRAPHICS := ../../../device/sony/fuji-common/recovery/recovery-gfx.
 BOARD_CUSTOM_RECOVERY_KEYMAPPING := ../../device/sony/fuji-common/recovery/recovery-keys.c
 BOARD_USE_CUSTOM_RECOVERY_FONT := \"roboto_15x24.h\"
 
+# Vold
 TARGET_USE_CUSTOM_LUN_FILE_PATH := /sys/devices/platform/msm_hsusb/gadget/lun%d/file
 
 # Audio
@@ -96,6 +98,18 @@ SOMC_CFG_SENSORS_GYRO_MPU3050 := yes
 SOMC_CFG_SENSORS_PROXIMITY_APDS9702 := yes
 SOMC_CFG_SENSORS_ACCEL_BMA250NA_INPUT := yes
 SOMC_CFG_SENSORS_COMPASS_AK8972 := yes
+
+#Graphics
+TARGET_USES_QCOM_BSP := true
+COMMON_GLOBAL_CFLAGS += -DQCOM_BSP
+
+# Internal storage fuse daemon permissions
+TARGET_FUSE_SDCARD_UID := 2800
+TARGET_FUSE_SDCARD_GID := 2800
+
+# FM radio
+BOARD_USES_STE_FMRADIO := true
+COMMON_GLOBAL_CFLAGS += -DSTE_FM
 
 #TWRP flags
 DEVICE_RESOLUTION := 720x1280

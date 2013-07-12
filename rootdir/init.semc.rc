@@ -296,31 +296,8 @@ service setssflagbc /system/bin/startupflag bootcomplete
     oneshot
     disabled
 
-# AT+CTSA and AT+CKPD support
-service semc-atfwd-d /system/bin/semc-atfwd-d
-    class main
-    user root
-    oneshot
-    disabled
-
-# Fast Dormancy
-service fast-dormancy /system/bin/fast-dormancy
-    class late_start
-    user root
-
-on property:ro.enable.fast_dormancy=false
-    stop fast-dormancy
-
 on property:dev.bootcomplete=1
     start setssflagbc
-    start semc-atfwd-d
-
-# Start suntrold
-service suntrold /system/bin/suntrold
-    class main
-    user system
-    group system
-    oneshot
 
 service secchan /system/bin/secchand
     class main
@@ -336,6 +313,12 @@ service nvimport /system/bin/nvimport
 service fixbt /system/bin/sh /system/etc/init.fixbt.sh
     class main
     user root
+    oneshot
+
+service btld /system/bin/btld -lpm 1
+    user root
+    group bluetooth net_bt_admin
+    disabled
     oneshot
 
 service hciattach /system/bin/brcm_patchram_plus --enable_hci --enable_lpm \
@@ -445,14 +428,20 @@ service mpdecision /system/bin/mpdecision --no_sleep --avg_comp
     user root
     disabled
 
-service thermald /system/bin/thermald -c /system/etc/thermald-semc.conf
+service thermald /system/bin/thermald
     class main
     socket thermald stream 0666 root root
     user root
+    disabled
 
 service qrngd /system/bin/qrngd -f
     class late_start
     user root
+
+service qseecomd /system/bin/qseecomd
+    class late_start
+    user system
+    group system
 
 on property:init.svc.bootanim=stopped
     start mpdecision

@@ -18,7 +18,8 @@
 #define DEVICE_PERMS_H
 
 #define PROPERTY_PERMS_APPEND \
-    { "camera.",          AID_MEDIA,    0 },
+    { "camera.",              AID_MEDIA,    0 }, \
+    { "sys.media.vdec.sw",    AID_SHELL,    0 },
 
 #endif /* DEVICE_PERMS_H */
 
