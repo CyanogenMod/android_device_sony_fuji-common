@@ -5,9 +5,9 @@ TARGET_NO_RADIOIMAGE := true
 BOARD_HAS_NO_MISC_PARTITION := true
 
 # Kernel properties
-TARGET_KERNEL_SOURCE := kernel/sony/msm8x60
+TARGET_KERNEL_SOURCE := kernel/sony/msm8660
 #BOARD_USES_UNCOMPRESSED_BOOT := true
-TARGET_KERNEL_CUSTOM_TOOLCHAIN := arm-eabi-4.4.3
+#TARGET_KERNEL_CUSTOM_TOOLCHAIN := arm-eabi-4.4.3
 
 # Platform
 TARGET_BOARD_PLATFORM := msm8660
@@ -58,14 +58,10 @@ USE_OPENGL_RENDERER := true
 TARGET_USES_ION := true
 TARGET_USES_C2D_COMPOSITION := true
 BOARD_EGL_CFG := device/sony/fuji-common/config/egl.cfg
-
-CAMERA_USES_SURFACEFLINGER_CLIENT_STUB := true
+TARGET_USES_QCOM_BSP := true
+COMMON_GLOBAL_CFLAGS += -DQCOM_BSP
 
 TARGET_PROVIDES_LIBLIGHTS := true
-
-# Camera
-COMMON_GLOBAL_CFLAGS += -DICS_CAMERA_BLOB
-BOARD_NEEDS_MEMORYHEAPPMEM := true
 
 # QCOM hardware
 BOARD_USES_QCOM_HARDWARE := true
@@ -87,7 +83,6 @@ TARGET_FORCE_CPU_UPLOAD := true
 
 # Custom boot
 TARGET_RECOVERY_PIXEL_FORMAT := "RGBX_8888"
-TARGET_RECOVERY_PRE_COMMAND := "touch /cache/recovery/boot;sync;"
 BOARD_CUSTOM_BOOTIMG_MK := device/sony/fuji-common/custombootimg.mk
 TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT := device/sony/fuji-common/releasetools/semc_ota_from_target_files
 BOARD_CUSTOM_GRAPHICS := ../../../device/sony/fuji-common/recovery/recovery-gfx.c

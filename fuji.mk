@@ -27,7 +27,7 @@ PRODUCT_COPY_FILES += \
 
 # Bootsplash
 PRODUCT_COPY_FILES += \
-   device/sony/fuji-common/prebuilt/logo_X.rle:root/logo.rle
+    device/sony/fuji-common/prebuilt/logo_X.rle:root/logo.rle
 
 # EGL config
 PRODUCT_COPY_FILES += \
@@ -161,7 +161,7 @@ PRODUCT_COPY_FILES += \
 
 # Thermal monitor configuration
 PRODUCT_COPY_FILES += \
-    device/sony/fuji-common/config/thermald-semc.conf:system/etc/thermald-semc.conf
+    device/sony/fuji-common/config/thermald-semc.conf:system/etc/thermald.conf
 
 # Set default USB interface
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
@@ -174,7 +174,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # Radio
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.telephony.ril_class=SonyQualcommRIL \
-    ro.telephony.ril.v3=skippinpukcount \
+    ro.telephony.ril.v3=skippinpukcount,qcomdsds \
     ro.telephony.call_ring.multiple=false \
     rild.libpath=/system/lib/libril-qc-qmi-1.so \
     rild.libargs=-d /dev/smd0 \
@@ -218,6 +218,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
     wifi.interface=wlan0 \
     wifi.supplicant_scan_interval=30
 
-$(call inherit-product, vendor/sony/qcom-common/common-vendor.mk)
+$(call inherit-product, vendor/sony/qcom-common-bsp/common-vendor.mk)
 
 $(call inherit-product, vendor/sony/fuji-common/common-vendor.mk)

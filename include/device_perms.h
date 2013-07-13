@@ -19,6 +19,7 @@
 
 #define PROPERTY_PERMS_APPEND \
     { "camera.",                    AID_MEDIA,       0 }, \
+    { "sys.media.vdec.sw",          AID_SHELL,       0 }, \
     { "service.brcm.bt.",           AID_BLUETOOTH,   0 }, \
     { "persist.service.brcm.bt.",   AID_BLUETOOTH,   0 },
 
