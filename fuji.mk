@@ -90,7 +90,8 @@ PRODUCT_PACKAGES += \
     libaudioutils
 
 PRODUCT_COPY_FILES += \
-    device/sony/fuji-common/config/media_codecs.xml:system/etc/media_codecs.xml
+    device/sony/fuji-common/config/media_codecs.xml:system/etc/media_codecs.xml \
+    device/sony/fuji-common/config/media_profiles.xml:system/etc/media_profiles.xml
 
 # Omx
 PRODUCT_PACKAGES += \
