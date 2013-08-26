@@ -31,6 +31,7 @@
 /dev/i2c-4                0664   root       system
 /dev/msm_mvs              0660   system     audio
 /dev/msm_voicememo        0660   system     audio
+/dev/pmem_tzcom           0660   system     audio
 /dev/tzcom                0660   system     audio
 /dev/qseecom              0660   system     audio
 /dev/qce                  0660   system     audio
